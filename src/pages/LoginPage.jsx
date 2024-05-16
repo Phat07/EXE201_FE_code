@@ -1,37 +1,105 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import "../css/login.css";
 import { Canvas } from "@react-three/fiber";
 import Dragon from "../models/Dragon";
 import ShopHair from "../models/ShopHair";
 import { Environment, OrbitControls } from "@react-three/drei";
 import ButterFlies from "../models/ButterFlies";
-import { Button, Modal, message, Steps, theme } from "antd";
+import {
+  Button,
+  Modal,
+  message,
+  Steps,
+  theme,
+  Space,
+  Divider,
+  Card,
+} from "antd";
 import { motion } from "framer-motion";
+import {
+  FacebookOutlined,
+  GoogleOutlined,
+  createFromIconfontCN,
+} from "@ant-design/icons";
+import { Typography } from "antd";
 
-const steps = [
-  {
-    title: "First",
-    content: (
-      <>
-        <div>hello</div>
-      </>
-    ),
-  },
-  {
-    title: "Second",
-    content: "Second-content",
-  },
-  {
-    title: "Last",
-    content: "Last-content",
-  },
-];
+const { Meta } = Card;
+//icon
+const IconFont = createFromIconfontCN({
+  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
+});
 function LoginPage(props) {
   const [status, setStatus] = useState("");
+  const [selected, setSelected] = useState(false);
+  const [id, setId] = useState(0);
   const [form, setForm] = useState({
     username: "",
     password: "",
   });
+  const [signUp, setSignUp] = useState({
+    type: "",
+  });
+
+  const handleSetFormDefault = () => {
+    setId(0);
+    setSelected(false);
+  };
+
+  const steps = [
+    {
+      title: "First",
+      content: (
+        <Space direction="horizontal">
+          <Card
+            id="1"
+            onClick={() => {
+              setSelected(!selected), setId(1);
+            }}
+            hoverable
+            style={{
+              width: 230,
+              opacity: selected === true && id == 1 ? 0.5 : 1,
+            }}
+            cover={
+              <img
+                alt="example"
+                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              />
+            }
+          >
+            <Meta title="Europe Street beat" description="www.instagram.com" />
+          </Card>
+          <Card
+            onClick={() => {
+              setSelected(!selected), setId(2);
+            }}
+            hoverable
+            style={{
+              width: 230,
+              opacity: selected === true && id == 2 ? 0.5 : 1,
+            }}
+            cover={
+              <img
+                alt="example"
+                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              />
+            }
+          >
+            <Meta title="Europe Street beat" description="www.instagram.com" />
+          </Card>
+        </Space>
+      ),
+    },
+    {
+      title: "Second",
+      content: "Second-content",
+    },
+    {
+      title: "Last",
+      content: "Last-content",
+    },
+  ];
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
@@ -68,7 +136,24 @@ function LoginPage(props) {
     border: `1px dashed ${token.colorBorder}`,
     marginTop: 16,
   };
+
   console.log("form", form);
+
+  console.log(selected, "selected");
+  console.log(id, "Id");
+
+  useEffect(() => {
+    if (id == 0) {
+      setId(0);
+    } else if (id != 1) {
+      setId(2);
+      setSelected(true);
+    } else if (id != 2) {
+      setId(1);
+      setSelected(true);
+    }
+  }, [id, selected]);
+
   return (
     <div className="container">
       <>
@@ -126,10 +211,12 @@ function LoginPage(props) {
                   Signup
                 </Button>
                 <Modal
-                  title="Basic Modal"
+                  title="Sign Up"
                   open={isModalOpen}
                   onOk={handleOk}
-                  onCancel={handleCancel}
+                  onCancel={() => {
+                    handleCancel(), handleSetFormDefault();
+                  }}
                 >
                   <motion.p
                     variants={{
@@ -147,7 +234,7 @@ function LoginPage(props) {
                     initial="hidden"
                     animate="visible"
                   >
-                    Some contents...
+                    Join with us...❤️
                   </motion.p>
                   <Steps current={current} items={items} />
                   <div style={contentStyle}>{steps[current].content}</div>
@@ -180,6 +267,25 @@ function LoginPage(props) {
                       </Button>
                     )}
                   </div>
+                  <Divider>
+                    <Typography.Title level={5}>Login as...</Typography.Title>
+                  </Divider>
+                  <Space size={3} className="flex justify-center">
+                    <Button
+                      className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
+                      type="primary"
+                      shape="circle"
+                    >
+                      <GoogleOutlined />
+                    </Button>
+                    <Button
+                      className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
+                      type="primary"
+                      shape="circle"
+                    >
+                      <IconFont type="icon-facebook" />
+                    </Button>
+                  </Space>
                 </Modal>
               </>
             </a>
