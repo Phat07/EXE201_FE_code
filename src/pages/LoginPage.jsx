@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
-import "../css/login.css";
+import styles from "../css/login.module.css";
 import { Canvas } from "@react-three/fiber";
 import Dragon from "../models/Dragon";
 import ShopHair from "../models/ShopHair";
@@ -155,7 +155,7 @@ function LoginPage(props) {
   }, [id, selected]);
 
   return (
-    <div className="container">
+    <div className={styles.container}>
       <>
         <Canvas style={{ width: "700px", height: "600px", overflow: "hidden" }}>
           <Environment preset="apartment" />
@@ -174,13 +174,13 @@ function LoginPage(props) {
           </Suspense>
         </Canvas>
       </>
-      <div className="square">
+      <div className={styles.square}>
         <i style={{ "--clr": "#00ff0a" }}></i>
         <i style={{ "--clr": "#ff0057" }}></i>
         <i style={{ "--clr": "#fffd44" }}></i>
-        <div className="login">
+        <div className={styles.login}>
           <h2>Login</h2>
-          <div className="inputBx">
+          <div className={styles.inputBx}>
             <input
               type="text"
               onChange={handleChange}
@@ -188,7 +188,7 @@ function LoginPage(props) {
               placeholder="Username"
             />
           </div>
-          <div className="inputBx">
+          <div className={styles.inputBx}>
             <input
               type="password"
               onChange={handleChange}
@@ -196,10 +196,10 @@ function LoginPage(props) {
               placeholder="Password"
             />
           </div>
-          <div className="inputBx">
+          <div className={styles.inputBx}>
             <input type="submit" placeholder="Submit" defaultValue="Sign in" />
           </div>
-          <div className="links">
+          <div className={styles.links}>
             <a href="#">Forget Password</a>
             <a href="#">
               <>

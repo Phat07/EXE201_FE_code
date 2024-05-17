@@ -4,10 +4,9 @@
   align-items: center;
   min-height: 100vh;
   min-width: 100vw;
-  /* background-color: #111; */
   background-image: url("../../public/images/forest2.png");
   z-index: 1;
-  background-size: cover; /* Kích thước hình ảnh sẽ được điều chỉnh để lấp đầy toàn bộ kích thước của phần tử */
+  background-size: cover; 
   background-position: center;
 	background-attachment: fixed;
   background-repeat: no-repeat;
