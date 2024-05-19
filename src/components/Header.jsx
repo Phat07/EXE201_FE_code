@@ -82,15 +82,17 @@ function Header(props) {
                 </a>
               </li>
               <li className="navbar-item">
-                <a href="#" className="navbar-link" data-nav-link>
+                {/* <a href="#" className="navbar-link" data-nav-link>
                   Contact
-                </a>
+                </a> */}
+                <Link className="navbar-link" to={"/create_shop"}>
+                  CreateShop
+                </Link>
               </li>
               <li className="navbar-item">
-                <Link className="navbar-link" to={"/baber"}> Baber </Link>
-                {/* <a href="#" className="navbar-link" data-nav-link> */}
-
-                {/* </a> */}
+                <Link className="navbar-link" to={"/baber"}>
+                  Barber
+                </Link>
               </li>
             </ul>
           </nav>
@@ -100,7 +102,6 @@ function Header(props) {
             data-nav-toggler
           >
             <IoMenu />
-            {/* <ion-icon name="menu-outline" aria-hidden="true" /> */}
           </button>
           <a href="#" className="btn has-before">
             <Link to={"/login"}>

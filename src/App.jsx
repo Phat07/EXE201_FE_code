@@ -12,10 +12,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage/>} />
         <Route path="/baber" element={<BaberPage/>} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/createShop" element={<BaberShopPage/>}/>
+        <Route path="/create_shop" element={<BaberShopPage/>}/>
       </Routes>
       {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
     </>
