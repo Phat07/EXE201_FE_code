@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import { motion } from "framer-motion";
 import { Avatar, Divider, List, Skeleton } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
-function BaberPage(props) {
+function BarberPage(props) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const loadMoreData = () => {
@@ -142,4 +142,4 @@ function BaberPage(props) {
   );
 }
 
-export default BaberPage;
+export default BarberPage;
