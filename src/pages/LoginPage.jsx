@@ -58,6 +58,7 @@ function LoginPage(props) {
 
   const phonePattern = /^0[3,4,5,6,7,8,9][0-9]{8}$/; // input 10 phone digits
   const pwdPattern = /^[A-Z][\w, \W]{7,30}/; //password minimium 8 characters
+  const emailPattern = /^[a-zA-Z0-9]+[@][a-z]+[.][a-z]{2,}$/; //email match @exapmle.com
 
   const handleSetFormDefault = () => {
     setId(0);
@@ -125,6 +126,13 @@ function LoginPage(props) {
                     size: "large",
                     prefix: <MailOutlined className={"prefixIcon"} />,
                   }}
+                  rules={[
+                    { required: true, message: "Email must be filled!" },
+                    {
+                      pattern: emailPattern,
+                      message: "Your email must required @!",
+                    },
+                  ]}
                 />
                 <ProFormText
                   width="md"
@@ -137,7 +145,7 @@ function LoginPage(props) {
                     prefix: <PhoneOutlined className={"prefixIcon"} />,
                   }}
                   rules={[
-                    { required: true, message: "Please input phone number" },
+                    { required: true, message: "Phone number must be filled!" },
                     {
                       pattern: phonePattern,
                       message: "Phone number must include 10 digits",
@@ -153,6 +161,9 @@ function LoginPage(props) {
                     size: "large",
                     prefix: <UserOutlined className={"prefixIcon"} />,
                   }}
+                  rules={[
+                    { required: true, message: "Username must be filled!" },
+                  ]}
                 />
                 <ProFormText.Password
                   width="md"
@@ -164,7 +175,7 @@ function LoginPage(props) {
                     prefix: <LockOutlined className={"prefixIcon"} />,
                   }}
                   rules={[
-                    { required: true, message: "Please input your password" },
+                    { required: true, message: "Password must be filled!" },
                     {
                       pattern: pwdPattern,
                       message:
@@ -356,25 +367,42 @@ function LoginPage(props) {
                       </Button>
                     )}
                   </div>
-                  <Divider>
-                    <Typography.Title level={5}>Login as...</Typography.Title>
-                  </Divider>
-                  <Space size={3} className="flex justify-center">
-                    <Button
-                      className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
-                      type="primary"
-                      shape="circle"
-                    >
-                      <GoogleOutlined />
-                    </Button>
-                    <Button
-                      className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
-                      type="primary"
-                      shape="circle"
-                    >
-                      <IconFont type="icon-facebook" />
-                    </Button>
-                  </Space>
+                  <motion.div
+                    variants={{
+                      hidden: { y: "-100vh", opacity: 0 },
+                      visible: {
+                        y: "-1px",
+                        opacity: 1,
+                        transition: {
+                          delay: 0.5,
+                          type: "spring",
+                          stiffness: 500,
+                        },
+                      },
+                    }}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <Divider>
+                      <Typography.Title level={5}>Login as...</Typography.Title>
+                    </Divider>
+                    <Space size={3} className="flex justify-center">
+                      <Button
+                        className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
+                        type="primary"
+                        shape="circle"
+                      >
+                        <GoogleOutlined />
+                      </Button>
+                      <Button
+                        className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
+                        type="primary"
+                        shape="circle"
+                      >
+                        <IconFont type="icon-facebook" />
+                      </Button>
+                    </Space>
+                  </motion.div>
                 </Modal>
               </>
             </a>
