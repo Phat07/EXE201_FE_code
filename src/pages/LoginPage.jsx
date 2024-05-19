@@ -19,9 +19,25 @@ import { motion } from "framer-motion";
 import {
   FacebookOutlined,
   GoogleOutlined,
+  LockOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  UserOutlined,
   createFromIconfontCN,
 } from "@ant-design/icons";
 import { Typography } from "antd";
+
+import {
+  FooterToolbar,
+  PageContainer,
+  ProForm,
+  ProFormDateRangePicker,
+  ProFormDigit,
+  ProFormSelect,
+  ProFormText,
+  ProLayout,
+  StepsForm,
+} from "@ant-design/pro-components";
 
 const { Meta } = Card;
 //icon
@@ -39,6 +55,10 @@ function LoginPage(props) {
   const [signUp, setSignUp] = useState({
     type: "",
   });
+
+  const phonePattern = /^0[3,4,5,6,7,8,9][0-9]{8}$/; // input 10 phone digits
+  const pwdPattern = /^[A-Z][\w, \W]{7,30}/; //password minimium 8 characters
+  const emailPattern = /^[a-zA-Z0-9]+[@][a-z]+[.][a-z]{2,}$/; //email match @exapmle.com
 
   const handleSetFormDefault = () => {
     setId(0);
@@ -92,14 +112,94 @@ function LoginPage(props) {
     },
     {
       title: "Second",
-      content: "Second-content",
+      content: (
+        <PageContainer>
+          <Card>
+            <ProForm submitter={true}>
+              <ProForm.Group title="Information">
+                <ProFormText
+                  width="md"
+                  name="email"
+                  label="Email"
+                  placeholder="example@gmail.com"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <MailOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[
+                    { required: true, message: "Email must be filled!" },
+                    {
+                      pattern: emailPattern,
+                      message: "Your email must required @!",
+                    },
+                  ]}
+                />
+                <ProFormText
+                  width="md"
+                  name="phone"
+                  label="Phone"
+                  placeholder="Phone number"
+                  tooltip="Phone number must include 10 digits"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <PhoneOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[
+                    { required: true, message: "Phone number must be filled!" },
+                    {
+                      pattern: phonePattern,
+                      message: "Phone number must include 10 digits",
+                    },
+                  ]}
+                />
+                <ProFormText
+                  width="md"
+                  name="username"
+                  label="Username"
+                  placeholder="Nguyen Van A"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <UserOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[
+                    { required: true, message: "Username must be filled!" },
+                  ]}
+                />
+                <ProFormText.Password
+                  width="md"
+                  name="password"
+                  label="Password"
+                  placeholder="..."
+                  fieldProps={{
+                    size: "large",
+                    prefix: <LockOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[
+                    { required: true, message: "Password must be filled!" },
+                    {
+                      pattern: pwdPattern,
+                      message:
+                        "Password length must from 7 to 30 characters and CAPITALIZE first character",
+                    },
+                  ]}
+                />
+                {/* <ProFormDateRangePicker
+              width="md"
+              name={["contract", "createTime"]}
+              label="合同生效时间"
+            /> */}
+              </ProForm.Group>
+            </ProForm>
+          </Card>
+        </PageContainer>
+      ),
     },
     {
       title: "Last",
       content: "Last-content",
     },
   ];
-
+  console.log(ProForm.values, "hello");
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
