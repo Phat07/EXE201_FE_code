@@ -267,25 +267,42 @@ function LoginPage(props) {
                       </Button>
                     )}
                   </div>
-                  <Divider>
-                    <Typography.Title level={5}>Login as...</Typography.Title>
-                  </Divider>
-                  <Space size={3} className="flex justify-center">
-                    <Button
-                      className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
-                      type="primary"
-                      shape="circle"
-                    >
-                      <GoogleOutlined />
-                    </Button>
-                    <Button
-                      className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
-                      type="primary"
-                      shape="circle"
-                    >
-                      <IconFont type="icon-facebook" />
-                    </Button>
-                  </Space>
+                  <motion.div
+                    variants={{
+                      hidden: { y: "-100vh", opacity: 0 },
+                      visible: {
+                        y: "-1px",
+                        opacity: 1,
+                        transition: {
+                          delay: 0.5,
+                          type: "spring",
+                          stiffness: 500,
+                        },
+                      },
+                    }}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <Divider>
+                      <Typography.Title level={5}>Login as...</Typography.Title>
+                    </Divider>
+                    <Space size={3} className="flex justify-center">
+                      <Button
+                        className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
+                        type="primary"
+                        shape="circle"
+                      >
+                        <GoogleOutlined />
+                      </Button>
+                      <Button
+                        className="bg-[#f5f5f5ee] hover:bg-blue-500 text-black"
+                        type="primary"
+                        shape="circle"
+                      >
+                        <IconFont type="icon-facebook" />
+                      </Button>
+                    </Space>
+                  </motion.div>
                 </Modal>
               </>
             </a>
