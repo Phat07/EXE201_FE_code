@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import styles from "../css/login.module.css";
 import { Canvas } from "@react-three/fiber";
 import Dragon from "../models/Dragon";
@@ -17,8 +17,10 @@ import {
 } from "antd";
 import { motion } from "framer-motion";
 import {
+  BankOutlined,
   FacebookOutlined,
   GoogleOutlined,
+  HomeOutlined,
   LockOutlined,
   MailOutlined,
   PhoneOutlined,
@@ -30,14 +32,21 @@ import { Typography } from "antd";
 import {
   FooterToolbar,
   PageContainer,
+  ProCard,
   ProForm,
+  ProFormCheckbox,
+  ProFormDatePicker,
   ProFormDateRangePicker,
   ProFormDigit,
   ProFormSelect,
   ProFormText,
+  ProFormTextArea,
   ProLayout,
   StepsForm,
 } from "@ant-design/pro-components";
+import { IoImageOutline, IoMaleOutline } from "react-icons/io5";
+import { TiUserOutline } from "react-icons/ti";
+// import { ProFormInstance } from "@ant-design/pro-components";
 
 const { Meta } = Card;
 //icon
@@ -65,13 +74,19 @@ function LoginPage(props) {
     setSelected(false);
   };
 
+  const finishForm = (values) => {
+    if (values) {
+      message.success("Your information is true");
+      setCurrent(current + 1);
+    }
+  };
+
   const steps = [
     {
-      title: "First",
+      title: "Select your role",
       content: (
         <Space direction="horizontal">
           <Card
-            id="1"
             onClick={() => {
               setSelected(!selected), setId(1);
             }}
@@ -89,9 +104,10 @@ function LoginPage(props) {
           >
             <Meta title="Europe Street beat" description="www.instagram.com" />
           </Card>
+
           <Card
             onClick={() => {
-              setSelected(!selected), setId(2);
+              setSelected(!selected), setId(2), console.log("salon");
             }}
             hoverable
             style={{
@@ -111,11 +127,16 @@ function LoginPage(props) {
       ),
     },
     {
-      title: "Second",
+      title: "Create Account",
       content: (
         <PageContainer>
-          <Card>
-            <ProForm submitter={true}>
+          <ProCard>
+            <ProForm
+              onFinish={(values) => {
+                finishForm(values);
+              }}
+              submitter={true}
+            >
               <ProForm.Group title="Information">
                 <ProFormText
                   width="md"
@@ -183,6 +204,121 @@ function LoginPage(props) {
                     },
                   ]}
                 />
+                <ProFormText
+                  width="md"
+                  name="fullname"
+                  label="FullName"
+                  placeholder="Your full name..."
+                  fieldProps={{
+                    size: "large",
+                    prefix: <UserOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[
+                    { required: true, message: "Fullname must be filled!" },
+                  ]}
+                />
+                <ProFormSelect
+                  width="md"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <IoMaleOutline className={"prefixIcon"} />,
+                  }}
+                  options={[
+                    { value: "male", label: "Male ♂️" },
+                    { value: "female", label: "Female ♀️" },
+                    { value: "other", label: "Other ♂️♀️" },
+                  ]}
+                  name="gender"
+                  label="Choose your gender:"
+                  placeholder="Your gender..."
+                  rules={[
+                    { required: true, message: "Your gender is required!" },
+                  ]}
+                />
+                <ProFormDatePicker
+                  width="md"
+                  name="dob"
+                  label="Birthday"
+                  placeholder="Year of Birth"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <MailOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[{ required: false }]}
+                />
+                <ProFormText
+                  width="md"
+                  name="roleName"
+                  label="Role Name"
+                  placeholder="Customer | Barber Shop"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <UserOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[
+                    { required: false, message: "Role name must be filled!" },
+                  ]}
+                  disabled={true}
+                />
+                <ProFormText
+                  width="md"
+                  name="address"
+                  label="Address"
+                  placeholder="27 Hang Tre"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <HomeOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[{ required: false }]}
+                  disabled={true}
+                />
+                <ProFormText
+                  width="md"
+                  name="humanId"
+                  label="Human ID"
+                  placeholder="1"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <UserOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[
+                    { required: false, message: "humanId must be filled!" },
+                  ]}
+                  disabled={true}
+                />
+                <ProFormText
+                  width="md"
+                  name="img"
+                  label="Image"
+                  placeholder="Image"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <IoImageOutline className={"prefixIcon"} />,
+                  }}
+                  rules={[{ required: false }]}
+                />
+                <ProFormText
+                  width="md"
+                  name="bankAccount"
+                  label="Bank Account"
+                  placeholder="Eric Le"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <BankOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[{ required: false }]}
+                />
+                <ProFormText
+                  width="md"
+                  name="bankName"
+                  label="Bank Name"
+                  placeholder="Sacombank"
+                  fieldProps={{
+                    size: "large",
+                    prefix: <BankOutlined className={"prefixIcon"} />,
+                  }}
+                  rules={[{ required: false }]}
+                />
                 {/* <ProFormDateRangePicker
               width="md"
               name={["contract", "createTime"]}
@@ -190,13 +326,23 @@ function LoginPage(props) {
             /> */}
               </ProForm.Group>
             </ProForm>
-          </Card>
+          </ProCard>
         </PageContainer>
       ),
     },
     {
-      title: "Last",
-      content: "Last-content",
+      title: "Finally",
+      content: (
+        <Typography>
+          <Typography.Title>Term Liences</Typography.Title>
+          <Typography.Text>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Debitis
+            recusandae illo praesentium quod! Corrupti facilis architecto eos
+            excepturi ipsam. Perspiciatis quaerat optio iure beatae at obcaecati
+            excepturi harum nesciunt adipisci?
+          </Typography.Text>
+        </Typography>
+      ),
     },
   ];
   console.log(ProForm.values, "hello");
@@ -338,25 +484,18 @@ function LoginPage(props) {
                   </motion.p>
                   <Steps current={current} items={items} />
                   <div style={contentStyle}>{steps[current].content}</div>
+                  {/* <ProLayout title={false}>{steps[current].content}</ProLayout> */}
                   <div
                     style={{
                       marginTop: 24,
                     }}
                   >
-                    {current < steps.length - 1 && (
+                    {current < steps.length - 1 && current < 1 && (
                       <Button type="primary" onClick={() => next()}>
                         Next
                       </Button>
                     )}
-                    {current === steps.length - 1 && (
-                      <Button
-                        type="primary"
-                        onClick={() => message.success("Processing complete!")}
-                      >
-                        Done
-                      </Button>
-                    )}
-                    {current > 0 && (
+                    {current > 0 && current < 2 && (
                       <Button
                         style={{
                           margin: "0 8px",
@@ -367,6 +506,7 @@ function LoginPage(props) {
                       </Button>
                     )}
                   </div>
+
                   <motion.div
                     variants={{
                       hidden: { y: "-100vh", opacity: 0 },

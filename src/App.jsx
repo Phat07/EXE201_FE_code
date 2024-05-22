@@ -20,7 +20,7 @@ function App() {
         <Route path="/create_shop" element={<BarberShopPage />} />
         <Route path="/create_shop/:id" element={<BarberShopPage />} />
         <Route path="/system_shop" element={<SystemBarberPage />} />
-        <Route path="/list_shop" element={<ListShopBarber/>}/>
+        <Route path="/list_shop" element={<ListShopBarber />} />
       </Routes>
       {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
     </>

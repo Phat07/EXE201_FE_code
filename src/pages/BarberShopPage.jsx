@@ -72,57 +72,58 @@ function BarberShopPage(props) {
           <Button type="primary" onClick={handleSubmit}>
             Submit
           </Button>
-          <Button onClick={() => setCurrent(0)}>Edit</Button> {/* Thêm nút "Edit" */}
+          <Button onClick={() => setCurrent(0)}>Edit</Button>{" "}
+          {/* Thêm nút "Edit" */}
         </div>
       ),
     },
   ];
 
   const next = () => {
-    // setCurrent(current + 1);
-    if (current === 0) {
-      // Call the create salon API
-      axios
-        .post("/api/salons", salon)
-        .then((response) => {
-          setSalon({ ...salon, id: response.data.id });
-          message.success("Salon created successfully!");
-          setCurrent(current + 1);
-        })
-        .catch((error) => {
-          console.error("Error creating salon:", error);
-          message.error("Failed to create salon.");
-        });
-    } else if (current === 1) {
-      // Call the add employees API
-      axios
-        .post(`/api/salons/${salon.id}/employees`, { employees })
-        .then(() => {
-          message.success("Employees added successfully!");
-          setCurrent(current + 1);
-        })
-        .catch((error) => {
-          console.error("Error adding employees:", error);
-          message.error("Failed to add employees.");
-        });
-    } else if (current === 2) {
-      // Call the add services API
-      axios
-        .post(`/api/salons/${salon.id}/services`, { services })
-        .then(() => {
-          message.success("Services added successfully!");
-          setCurrent(current + 1);
-        })
-        .catch((error) => {
-          console.error("Error adding services:", error);
-          message.error("Failed to add services.");
-        });
-    } else if (current === 3) {
-      // Bước "Review & Submit"
-      setCurrent(0); // Chuyển về bước "Create Salon" khi nhấn "Edit"
-    } else {
-      setCurrent(current + 1);
-    }
+    setCurrent(current + 1);
+    // if (current === 0) {
+    //   // Call the create salon API
+    //   axios
+    //     .post("/api/salons", salon)
+    //     .then((response) => {
+    //       setSalon({ ...salon, id: response.data.id });
+    //       message.success("Salon created successfully!");
+    //       setCurrent(current + 1);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error creating salon:", error);
+    //       message.error("Failed to create salon.");
+    //     });
+    // } else if (current === 1) {
+    //   // Call the add employees API
+    //   axios
+    //     .post(`/api/salons/${salon.id}/employees`, { employees })
+    //     .then(() => {
+    //       message.success("Employees added successfully!");
+    //       setCurrent(current + 1);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error adding employees:", error);
+    //       message.error("Failed to add employees.");
+    //     });
+    // } else if (current === 2) {
+    //   // Call the add services API
+    //   axios
+    //     .post(`/api/salons/${salon.id}/services`, { services })
+    //     .then(() => {
+    //       message.success("Services added successfully!");
+    //       setCurrent(current + 1);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error adding services:", error);
+    //       message.error("Failed to add services.");
+    //     });
+    // } else if (current === 3) {
+    //   // Bước "Review & Submit"
+    //   setCurrent(0); // Chuyển về bước "Create Salon" khi nhấn "Edit"
+    // } else {
+    //   setCurrent(current + 1);
+    // }
   };
 
   const prev = () => {

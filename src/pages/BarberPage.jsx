@@ -23,7 +23,7 @@ function BarberPage(props) {
         setLoading(false);
       });
   };
-  console.log("data",data);
+  console.log("data", data);
   useEffect(() => {
     loadMoreData();
     window.scrollTo({ top: 3000, behavior: "smooth" });
@@ -68,20 +68,23 @@ function BarberPage(props) {
           </a>
         </motion.div>
       </section>
-      <motion.div className="mt-5" variants={{
-            hidden: { y: "-100vh", opacity: 0 },
-            visible: {
-              y: "-1px",
-              opacity: 1,
-              transition: {
-                delay: 0.5,
-                type: "spring",
-                stiffness: 50,
-              },
+      <motion.div
+        className="mt-5"
+        variants={{
+          hidden: { y: "-100vh", opacity: 0 },
+          visible: {
+            y: "-1px",
+            opacity: 1,
+            transition: {
+              delay: 0.5,
+              type: "spring",
+              stiffness: 50,
             },
-          }}
-          initial="hidden"
-          animate="visible">
+          },
+        }}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="pl-20">
           <h1 className="font-black text-5xl">title</h1>
           <p className="text-xl mt-2">What affects the search results?</p>
@@ -124,10 +127,10 @@ function BarberPage(props) {
                   description={item.email}
                   // style={{width:"50px"}}
                 />
-                <div style={{width:"600px"}}>
+                <div style={{ width: "600px" }}>
                   <div className="flex justify-between">
-                  <p>địa chỉ</p>
-                  <p>Book</p>
+                    <p>địa chỉ</p>
+                    <p>Book</p>
                   </div>
                   <p>cắt tóc đơn</p>
                   <p>cạo râu, sale off</p>
