@@ -60,7 +60,7 @@ function BarberShopPage(props) {
           <h3>Employees:</h3>
           {employees.map((emp, index) => (
             <p key={index}>
-              {emp.name} - {emp.position}
+              {emp.fullName} - {emp.address} - {emp.email} - {emp.phone} - {emp.gender}
             </p>
           ))}
           <h3>Services:</h3>
