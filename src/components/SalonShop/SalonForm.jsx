@@ -24,20 +24,20 @@ const daysOfWeek = [
   { label: "Sunday", value: "sunday" },
 ];
 
-const SalonForm = ({ onAddSalon }) => {
+const SalonForm = ({ onAddSalon, salon }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [dayOff, setDayOff] = useState({});
   const [salonData, setSalonData] = useState({});
 
-  useEffect(() => {
-    axios
-      .get("https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon")
-      .then((res) => {
-        setSalonData(res.data[0]);
-        console.log(res.data[0]);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon")
+  //     .then((res) => {
+  //       setSalonData(res.data[0]);
+  //       console.log(res.data[0]);
+  //     });
+  // }, []);
 
   const onFinish = (values) => {
     const { name, location, description, ...schedules } = values;
@@ -59,7 +59,12 @@ const SalonForm = ({ onAddSalon }) => {
       }
     }
 
-    const salonDataForm = { name, location, description, image: fileList };
+    const salonDataForm = {
+      name,
+      location,
+      description,
+      image: fileList,
+    };
     onAddSalon(salonDataForm, formattedSchedules);
     form.resetFields();
     setFileList([]);
@@ -118,13 +123,16 @@ const SalonForm = ({ onAddSalon }) => {
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
       <Form.Item
-        value={salonData.name}
+        // value={salonData.name}
         name="name"
         label="Salon Name"
         rules={[{ required: true }]}
       >
-        <Input placeholder="Enter salon name" />
-        {/* <Form.Item>{salonData.name}</Form.Item> */}
+        <Input
+          // value={salon?.id ? salon?.name : null}
+          placeholder="Enter salon name"
+        />
+        <Form.Item>{salon.name}</Form.Item>
       </Form.Item>
       <Form.Item name="location" label="Location" rules={[{ required: true }]}>
         <Input placeholder="Enter location" />

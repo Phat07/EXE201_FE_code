@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Steps, Button, message } from "antd";
 import Header from "../components/Header";
 import SalonForm from "../components/SalonShop/SalonForm";
@@ -12,6 +12,17 @@ function BarberShopPage(props) {
   const [salon, setSalon] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [services, setServices] = useState([]);
+  const [salonData, setSalonData] = useState({});
+
+  useEffect(() => {
+    axios
+      .get("https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon")
+      .then((res) => {
+        setSalonData(res.data[0]);
+        console.log(res.data[0]);
+      });
+  }, []);
+
   const handleSubmit = () => {
     message.success("Salon created successfully!");
     // Here, you can handle the form submission to your backend.
@@ -21,6 +32,7 @@ function BarberShopPage(props) {
       title: "Create Salon",
       content: (
         <SalonForm
+          salon={salonData}
           onAddSalon={(salon) => {
             setSalon(salon);
             // setCurrent(current + 1);
