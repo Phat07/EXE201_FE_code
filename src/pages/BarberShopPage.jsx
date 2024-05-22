@@ -5,9 +5,11 @@ import SalonForm from "../components/SalonShop/SalonForm";
 import AddEmployeeForm from "../components/SalonShop/AddEmployeeForm";
 import AddServiceForm from "../components/SalonShop/AddServiceForm";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const { Step } = Steps;
 function BarberShopPage(props) {
+  const { id } = useParams();
   const [current, setCurrent] = useState(0);
   const [salon, setSalon] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -21,6 +23,7 @@ function BarberShopPage(props) {
       title: "Create Salon",
       content: (
         <SalonForm
+          id={id}
           onAddSalon={(salon) => {
             setSalon(salon);
             // setCurrent(current + 1);

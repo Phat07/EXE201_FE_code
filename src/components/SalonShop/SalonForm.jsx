@@ -24,7 +24,7 @@ const daysOfWeek = [
   { label: "Sunday", value: "sunday" },
 ];
 
-const SalonForm = ({ onAddSalon }) => {
+const SalonForm = ({ onAddSalon, id }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [dayOff, setDayOff] = useState({});
@@ -38,6 +38,29 @@ const SalonForm = ({ onAddSalon }) => {
         console.log(res.data[0]);
       });
   }, []);
+  useEffect(() => {
+    if (id) {
+      form.setFieldsValue({
+        name: sampleData.name,
+        location: sampleData.address,
+        description: sampleData.description,
+        // Set default time for each day
+        ...daysOfWeek.reduce((acc, day) => {
+          acc[day.value] = {
+            start: moment(
+              sampleData.listDate.find((item) => item.day === day.value)?.from,
+              "HH:mm"
+            ),
+            end: moment(
+              sampleData.listDate.find((item) => item.day === day.value)?.to,
+              "HH:mm"
+            ),
+          };
+          return acc;
+        }, {}),
+      });
+    }
+  }, [id]);
 
   const onFinish = (values) => {
     const { name, location, description, ...schedules } = values;
