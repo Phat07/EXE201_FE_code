@@ -34,6 +34,7 @@ function BarberShopPage(props) {
       title: "Create Salon",
       content: (
         <SalonForm
+          id={id}
           salon={salonData}
           onAddSalon={(salon) => {
             setSalon(salon);

@@ -24,7 +24,7 @@ const daysOfWeek = [
   { label: "Sunday", value: "sunday" },
 ];
 
-const SalonForm = ({ onAddSalon, salon }) => {
+const SalonForm = ({ onAddSalon, salon, id }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [dayOff, setDayOff] = useState({});
@@ -38,6 +38,33 @@ const SalonForm = ({ onAddSalon, salon }) => {
   //       console.log(res.data[0]);
   //     });
   // }, []);
+  useEffect(() => {
+    if (id && salon.img) {
+      setFileList([
+        { uid: "-1", name: "image.png", status: "done", url: salon.img },
+      ]);
+      form.setFieldsValue({
+        name: salon.name,
+        location: salon.address,
+        description: salon.description,
+        // image: salon.img,
+        // Set default time for each day
+        ...daysOfWeek.reduce((acc, day) => {
+          acc[day.value] = {
+            start: moment(
+              salon?.listDate?.find((item) => item.day === day.value)?.from,
+              "HH:mm"
+            ),
+            end: moment(
+              salon?.listDate?.find((item) => item.day === day.value)?.to,
+              "HH:mm"
+            ),
+          };
+          return acc;
+        }, {}),
+      });
+    }
+  }, [id, salon]);
 
   const onFinish = (values) => {
     const { name, location, description, ...schedules } = values;
@@ -132,7 +159,6 @@ const SalonForm = ({ onAddSalon, salon }) => {
           // value={salon?.id ? salon?.name : null}
           placeholder="Enter salon name"
         />
-        <Form.Item>{salon.name}</Form.Item>
       </Form.Item>
       <Form.Item name="location" label="Location" rules={[{ required: true }]}>
         <Input placeholder="Enter location" />
@@ -158,7 +184,12 @@ const SalonForm = ({ onAddSalon, salon }) => {
         {fileList.map((file) => (
           <img
             key={file.uid}
-            src={URL.createObjectURL(file.originFileObj)}
+            src={
+              file.url ||
+              (file.originFileObj
+                ? URL.createObjectURL(file.originFileObj)
+                : null)
+            }
             alt={file.name}
             style={{
               width: "50%",
@@ -169,11 +200,15 @@ const SalonForm = ({ onAddSalon, salon }) => {
           />
         ))}
       </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Create Salon
-        </Button>
-      </Form.Item>
+      {id ? (
+        ""
+      ) : (
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Create Salon
+          </Button>
+        </Form.Item>
+      )}
     </Form>
   );
 };

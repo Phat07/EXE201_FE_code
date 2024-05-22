@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, List, Skeleton } from "antd";
 import Header from "../components/Header";
+import { Link } from "react-router-dom";
 
 const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+const fakeDataUrl = `https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon`;
 function ListShopBarber(props) {
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -13,9 +14,10 @@ function ListShopBarber(props) {
     fetch(fakeDataUrl)
       .then((res) => res.json())
       .then((res) => {
+        console.log(res);
         setInitLoading(false);
-        setData(res.results);
-        setList(res.results);
+        setData(res);
+        setList(res);
       });
   }, []);
   const onLoadMore = () => {
@@ -32,7 +34,7 @@ function ListShopBarber(props) {
     fetch(fakeDataUrl)
       .then((res) => res.json())
       .then((res) => {
-        const newData = data.concat(res.results);
+        const newData = data.concat(res);
         setData(newData);
         setList(newData);
         setLoading(false);
@@ -74,15 +76,15 @@ function ListShopBarber(props) {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <a key="list-loadmore-edit">edit</a>,
+                <Link to={`/create_shop/${item.id}`} key="list-loadmore-edit">edit</Link>,
                 <a key="list-loadmore-more">more</a>,
               ]}
             >
               <Skeleton avatar title={false} loading={item.loading} active>
                 <List.Item.Meta
-                  avatar={<Avatar src={item.picture.large} />}
-                  title={<a href="https://ant.design">{item.name?.last}</a>}
-                  description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  avatar={<Avatar src={item?.img} />}
+                  title={<Link to={`/create_shop/${item.id}`}>{item?.name}</Link>}
+                  description={item.description}
                 />
                 <div>content</div>
               </Skeleton>
