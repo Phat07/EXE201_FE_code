@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Form, Input, Button, TimePicker, Row, Col, Upload, Checkbox } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  TimePicker,
+  Row,
+  Col,
+  Upload,
+  Checkbox,
+  message,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
 
@@ -21,7 +31,7 @@ const SalonForm = ({ onAddSalon }) => {
   const onFinish = (values) => {
     const { name, location, description, ...schedules } = values;
     const formattedSchedules = {};
-    console.log('date',formattedSchedules);
+    console.log("date", formattedSchedules);
     for (const day in schedules) {
       if (!dayOff[day]) {
         if (schedules[day]?.start && schedules[day]?.end) {
@@ -43,6 +53,7 @@ const SalonForm = ({ onAddSalon }) => {
     form.resetFields();
     setFileList([]);
     setDayOff({});
+    message.success("Your salon is created!");
   };
 
   const renderTimePickers = () => {
@@ -52,7 +63,12 @@ const SalonForm = ({ onAddSalon }) => {
           <Form.Item
             name={[day.value, "start"]}
             label={`${day.label} Start`}
-            rules={[{ required: !dayOff[day.value], message: "Start time is required unless it's a day off." }]}
+            rules={[
+              {
+                required: !dayOff[day.value],
+                message: "Start time is required unless it's a day off.",
+              },
+            ]}
           >
             <TimePicker format="HH:mm" disabled={dayOff[day.value]} />
           </Form.Item>
@@ -61,14 +77,21 @@ const SalonForm = ({ onAddSalon }) => {
           <Form.Item
             name={[day.value, "end"]}
             label={`${day.label} End`}
-            rules={[{ required: !dayOff[day.value], message: "End time is required unless it's a day off." }]}
+            rules={[
+              {
+                required: !dayOff[day.value],
+                message: "End time is required unless it's a day off.",
+              },
+            ]}
           >
             <TimePicker format="HH:mm" disabled={dayOff[day.value]} />
           </Form.Item>
         </Col>
         <Col span={8}>
           <Checkbox
-            onChange={(e) => setDayOff({ ...dayOff, [day.value]: e.target.checked })}
+            onChange={(e) =>
+              setDayOff({ ...dayOff, [day.value]: e.target.checked })
+            }
             checked={dayOff[day.value]}
           >
             Day Off
@@ -88,7 +111,11 @@ const SalonForm = ({ onAddSalon }) => {
       <Form.Item name="location" label="Location" rules={[{ required: true }]}>
         <Input placeholder="Enter location" />
       </Form.Item>
-      <Form.Item name="description" label="Description" rules={[{ required: true }]}>
+      <Form.Item
+        name="description"
+        label="Description"
+        rules={[{ required: true }]}
+      >
         <Input.TextArea placeholder="Enter description" />
       </Form.Item>
       {renderTimePickers()}
@@ -107,7 +134,12 @@ const SalonForm = ({ onAddSalon }) => {
             key={file.uid}
             src={URL.createObjectURL(file.originFileObj)}
             alt={file.name}
-            style={{ width: "50%", height: "80%", marginTop: "10px", background: "cover" }} // Adjust size here
+            style={{
+              width: "50%",
+              height: "80%",
+              marginTop: "10px",
+              background: "cover",
+            }} // Adjust size here
           />
         ))}
       </Form.Item>
