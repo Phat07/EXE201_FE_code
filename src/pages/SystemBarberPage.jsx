@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { Select, Space, Empty, Button } from "antd";
-import "../css/baber.css";
+import { Select, Space, Empty, Button, message, Modal } from "antd";
 import { CiLocationOn } from "react-icons/ci";
 import axios from "axios";
 import Loader from "../components/Loader";
+import "../css/baber.css";
+
 function SystemBarberPage(props) {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
+  const [loading, setLoading] = useState(false); // State for loading indicator
 
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
 
-  //
   const [add, setAdd] = useState("");
 
   useEffect(() => {
@@ -38,7 +39,6 @@ function SystemBarberPage(props) {
           "https://raw.githubusercontent.com/madnh/hanhchinhvn/master/dist/quan_huyen.json"
         )
         .then((response) => {
-          console.log("distr", response.data);
           const districtsData = Object.values(response.data).filter(
             (district) => district.path.includes(selectedProvince)
           );
@@ -53,7 +53,7 @@ function SystemBarberPage(props) {
       setWards([]);
     }
   }, [selectedProvince]);
-  // -----------------------------------------------------------------------------------------------------------
+
   useEffect(() => {
     if (selectedDistrict) {
       axios
@@ -71,50 +71,63 @@ function SystemBarberPage(props) {
       setWards([]);
     }
   }, [selectedDistrict]);
+
   const handleChange = (value) => {
-    console.log("value", value);
     setSelectedProvince(value);
     setSelectedDistrict('');
     setSelectedWard("");
   };
+
   const handleChangeDistrict = (value) => {
     setSelectedDistrict(value);
   };
-  console.log("pro", provinces);
-  console.log("selected", selectedProvince);
-  console.log("disstr", selectedDistrict);
-  function handleSearch() {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const { latitude, longitude } = pos.coords;
-      console.log(latitude, longitude);
-      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-      fetch(url)
-        .then((res) => res.json())
-        .then((data) => setAdd(data.address));
+
+  const handleSearch = () => {
+    document.body.style.overflow = 'hidden'; // Disable scrolling
+  
+    Modal.confirm({
+      title: 'Location Permission',
+      content: 'Do you want to allow access to your location?',
+      onOk() {
+        setLoading(true); // Show loader only when 'Ok' is clicked
+  
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const { latitude, longitude } = pos.coords;
+              const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+              fetch(url)
+                .then((res) => res.json())
+                .then((data) => setAdd(data.address))
+                .finally(() => {
+                  setLoading(false); // Hide loader on success
+                  document.body.style.overflow = ''; // Enable scrolling
+                });
+              message.success("Thank you for enabling location services.");
+            },
+            (error) => {
+              message.error("You have denied location access.");
+              setLoading(false); // Hide loader on error
+              document.body.style.overflow = ''; // Enable scrolling
+            }
+          );
+        } else {
+          message.error("Geolocation is not supported by your browser.");
+          setLoading(false); // Hide loader on error
+          document.body.style.overflow = ''; // Enable scrolling
+        }
+      },
+      onCancel() {
+        message.error("You have denied location access.");
+        document.body.style.overflow = ''; // Enable scrolling
+      }
     });
-  }
+  };
+  
+
   return (
     <div>
       <Header />
-      {/* <div
-        style={{
-          width: "100vw",
-          height: "50vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src="../../public/images/barber.jpeg"
-          style={{
-            maxWidth: "100%",
-            maxHeight: "100%",
-            width: "auto",
-            height: "auto",
-          }}
-        />
-      </div> */}
       <div className="system-salon__container">
         <div className="flex justify-between">
           <div
@@ -139,14 +152,12 @@ function SystemBarberPage(props) {
 
           <div>
             <Select
-              // defaultValue="District"
               value={selectedDistrict || 'District'}
               style={{
                 width: 200,
               }}
               onChange={handleChangeDistrict}
               options={selectedProvince ? districts : <Empty />}
-              // disabled={!selectedProvince}
             />
           </div>
         </div>
@@ -162,7 +173,7 @@ function SystemBarberPage(props) {
           </p>
         </div>
       </div>
-      <Loader/>
+      {loading && <div className="overlay" ><Loader /></div>}
     </div>
   );
 }
