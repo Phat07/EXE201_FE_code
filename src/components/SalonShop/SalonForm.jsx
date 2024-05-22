@@ -28,18 +28,20 @@ const SalonForm = ({ onAddSalon }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [dayOff, setDayOff] = useState({});
+  const [salonData, setSalonData] = useState({});
 
   useEffect(() => {
     axios
       .get("https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon")
       .then((res) => {
-        console.log(res);
+        setSalonData(res.data[0]);
+        console.log(res.data[0]);
       });
   }, []);
 
   const onFinish = (values) => {
     const { name, location, description, ...schedules } = values;
-    const formattedSchedules = {};
+    const formattedSchedules = [];
     console.log("date", formattedSchedules);
     for (const day in schedules) {
       if (!dayOff[day]) {
@@ -57,11 +59,12 @@ const SalonForm = ({ onAddSalon }) => {
       }
     }
 
-    const salonData = { name, location, description, image: fileList };
-    onAddSalon(salonData, formattedSchedules);
+    const salonDataForm = { name, location, description, image: fileList };
+    onAddSalon(salonDataForm, formattedSchedules);
     form.resetFields();
     setFileList([]);
     setDayOff({});
+    console.log(salonDataForm, formattedSchedules, "Salon Data created Form");
     message.success("Your salon is created!");
   };
 
@@ -114,8 +117,14 @@ const SalonForm = ({ onAddSalon }) => {
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
-      <Form.Item name="name" label="Salon Name" rules={[{ required: true }]}>
+      <Form.Item
+        value={salonData.name}
+        name="name"
+        label="Salon Name"
+        rules={[{ required: true }]}
+      >
         <Input placeholder="Enter salon name" />
+        {/* <Form.Item>{salonData.name}</Form.Item> */}
       </Form.Item>
       <Form.Item name="location" label="Location" rules={[{ required: true }]}>
         <Input placeholder="Enter location" />

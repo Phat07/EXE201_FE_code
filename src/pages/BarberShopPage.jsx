@@ -23,6 +23,7 @@ function BarberShopPage(props) {
         <SalonForm
           onAddSalon={(salon) => {
             setSalon(salon);
+            // setCurrent(current + 1);
             next();
           }}
         />
