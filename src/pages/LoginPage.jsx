@@ -46,6 +46,8 @@ import {
 } from "@ant-design/pro-components";
 import { IoImageOutline, IoMaleOutline } from "react-icons/io5";
 import { TiUserOutline } from "react-icons/ti";
+import Cut from "../models/Cut";
+import Barber from "../models/Barber";
 // import { ProFormInstance } from "@ant-design/pro-components";
 
 const { Meta } = Card;
@@ -403,20 +405,28 @@ function LoginPage(props) {
   return (
     <div className={styles.container}>
       <>
-        <Canvas style={{ width: "700px", height: "600px", overflow: "hidden" }}>
-          <Environment preset="apartment" />
+        <Canvas style={{ width: "1000px", height: "600px", overflow: "hidden" }}>
+          <Environment preset="warehouse" />
           <directionalLight intensity={0.5} />
           <ambientLight intensity={2} position={[-1, 1, 3]} />
           <OrbitControls />
           <Suspense fallback={null}>
             {/* <Dragon intensity={0.5} scale={5} position={[-1, -2.5, -2]}  /> */}
             {/* <ShopHair intensity={0.5} scale={0.2}/> */}
-            <ButterFlies
+            {/* <ButterFlies
               intensity={0.5}
               scale={2.5}
               position={[-1, -2.5, -2]}
               action={status}
-            />
+            /> */}
+            <Cut intensity={0.5}
+              scale={1}
+              position={[1.5, 1.5, -2]}
+              action={status}/>
+            <Barber intensity={0.5}
+              scale={0.03}
+              position={[-7.5, 2.5, -3]}
+              action={status}/>
           </Suspense>
         </Canvas>
       </>
