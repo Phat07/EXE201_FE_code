@@ -4,6 +4,7 @@ import { Select, Space, Empty, Button } from "antd";
 import "../css/baber.css";
 import { CiLocationOn } from "react-icons/ci";
 import axios from "axios";
+import Loader from "../components/Loader";
 function SystemBarberPage(props) {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -161,6 +162,7 @@ function SystemBarberPage(props) {
           </p>
         </div>
       </div>
+      <Loader/>
     </div>
   );
 }
