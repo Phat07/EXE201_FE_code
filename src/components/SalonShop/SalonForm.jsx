@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   Input,
@@ -12,6 +12,7 @@ import {
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
+import axios from "axios";
 
 const daysOfWeek = [
   { label: "Monday", value: "monday" },
@@ -27,6 +28,14 @@ const SalonForm = ({ onAddSalon }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [dayOff, setDayOff] = useState({});
+
+  useEffect(() => {
+    axios
+      .get("https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon")
+      .then((res) => {
+        console.log(res);
+      });
+  }, []);
 
   const onFinish = (values) => {
     const { name, location, description, ...schedules } = values;
