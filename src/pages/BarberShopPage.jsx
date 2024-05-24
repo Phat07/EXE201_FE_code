@@ -16,9 +16,13 @@ function BarberShopPage(props) {
   const [services, setServices] = useState([]);
   const [salonData, setSalonData] = useState({});
 
+  // demo
+
+  const [data, setData] = useState("");
+
   const [employeeModalVisible, setEmployeeModalVisible] = useState(false);
   const [serviceModalVisible, setServiceModalVisible] = useState(false);
-
+  console.log("test", data);
   useEffect(() => {
     axios
       .get("https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon")
@@ -32,74 +36,74 @@ function BarberShopPage(props) {
     message.success("Salon created successfully!");
     // Here, you can handle the form submission to your backend.
   };
-  const steps = [
-    {
-      title: "Create Salon",
-      content: (
-        <SalonForm
-          id={id}
-          salon={salonData}
-          onAddSalon={(salon) => {
-            setSalon(salon);
-            setCurrent(current + 1);
-            // next();  khi có api sẽ dùng next để thực thi khi gọi api tại đây và dùng nó để chuyển sang các form khác
-          }}
-        />
-      ),
-    },
-    {
-      title: "Add Employees",
-      content: (
-        <AddEmployeeForm
-          onAddEmployees={(employees) => {
-            setEmployees(employees);
-            setCurrent(current + 1);
-            // next();
-          }}
-        />
-      ),
-    },
-    {
-      title: "Add Services",
-      content: (
-        <AddServiceForm
-          onAddServices={(services) => {
-            setServices(services);
-            setCurrent(current + 1);
-            // next();
-          }}
-        />
-      ),
-    },
-    {
-      title: "Review & Submit",
-      content: (
-        <div>
-          <h3>Salon Details:</h3>
-          <p>Name: {salon?.name}</p>
-          <p>Location: {salon?.location}</p>
-          <h3>Employees:</h3>
-          {employees.map((emp, index) => (
-            <p key={index}>
-              {emp.fullName} - {emp.address} - {emp.email} - {emp.phone} -{" "}
-              {emp.gender}
-            </p>
-          ))}
-          <h3>Services:</h3>
-          {services.map((service, index) => (
-            <p key={index}>
-              {service.name} - {service.price}
-            </p>
-          ))}
-          <Button type="primary" onClick={handleSubmit}>
-            Submit
-          </Button>
-          <Button onClick={() => setCurrent(0)}>Edit</Button>{" "}
-          {/* Thêm nút "Edit" */}
-        </div>
-      ),
-    },
-  ];
+  // const steps = [
+  //   {
+  //     title: "Create Salon",
+  //     content: (
+  //       <SalonForm
+  //         id={id}
+  //         salon={salonData}
+  //         onAddSalon={(salon) => {
+  //           setSalon(salon);
+  //           setCurrent(current + 1);
+  //           // next();  khi có api sẽ dùng next để thực thi khi gọi api tại đây và dùng nó để chuyển sang các form khác
+  //         }}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: "Add Employees",
+  //     content: (
+  //       <AddEmployeeForm
+  //         onAddEmployees={(employees) => {
+  //           setEmployees(employees);
+  //           setCurrent(current + 1);
+  //           // next();
+  //         }}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: "Add Services",
+  //     content: (
+  //       <AddServiceForm
+  //         onAddServices={(services) => {
+  //           setServices(services);
+  //           setCurrent(current + 1);
+  //           // next();
+  //         }}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: "Review & Submit",
+  //     content: (
+  //       <div>
+  //         <h3>Salon Details:</h3>
+  //         <p>Name: {salon?.name}</p>
+  //         <p>Location: {salon?.location}</p>
+  //         <h3>Employees:</h3>
+  //         {employees.map((emp, index) => (
+  //           <p key={index}>
+  //             {emp.fullName} - {emp.address} - {emp.email} - {emp.phone} -{" "}
+  //             {emp.gender}
+  //           </p>
+  //         ))}
+  //         <h3>Services:</h3>
+  //         {services.map((service, index) => (
+  //           <p key={index}>
+  //             {service.name} - {service.price}
+  //           </p>
+  //         ))}
+  //         <Button type="primary" onClick={handleSubmit}>
+  //           Submit
+  //         </Button>
+  //         <Button onClick={() => setCurrent(0)}>Edit</Button>{" "}
+  //         {/* Thêm nút "Edit" */}
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
   const next = () => {
     // setCurrent(current + 1);
@@ -169,12 +173,17 @@ function BarberShopPage(props) {
           ))}
         </Steps>
         <div className="steps-content">{steps[current].content}</div> */}
+
+        {/*  khi chạy app thi m chay barbershop,   id, salon-- cha do con--, demo--cha do con--bien hung-- la doi con thuc thi xong gui lai cha data de tk cha setdata hienj ra , */}
         <SalonForm
           id={id}
           salon={salonData}
+          demo={(data) => {
+            setData(data);
+          }}
           onAddSalon={(salon) => {
             setSalon(salon);
-            setCurrent(current + 1);
+            // setCurrent(current + 1);
             // next();  khi có api sẽ dùng next để thực thi khi gọi api tại đây và dùng nó để chuyển sang các form khác
           }}
         />

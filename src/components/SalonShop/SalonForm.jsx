@@ -24,7 +24,7 @@ const daysOfWeek = [
   { label: "Sunday", value: "sunday" },
 ];
 
-const SalonForm = ({ onAddSalon, salon, id }) => {
+const SalonForm = ({ onAddSalon, salon, id, demo }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [dayOff, setDayOff] = useState({});
@@ -92,6 +92,7 @@ const SalonForm = ({ onAddSalon, salon, id }) => {
       image: fileList,
     };
     onAddSalon(salonDataForm, formattedSchedules);
+    demo("demo");
     form.resetFields();
     setFileList([]);
     setDayOff({});
@@ -201,10 +202,10 @@ const SalonForm = ({ onAddSalon, salon, id }) => {
       </Form.Item>
       {id ? (
         <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Edit Salon
-        </Button>
-      </Form.Item>
+          <Button type="primary" htmlType="submit">
+            Edit Salon
+          </Button>
+        </Form.Item>
       ) : (
         <Form.Item>
           <Button type="primary" htmlType="submit">
