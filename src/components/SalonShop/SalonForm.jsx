@@ -48,7 +48,6 @@ const SalonForm = ({ onAddSalon, salon, id }) => {
         location: salon.address,
         description: salon.description,
         // image: salon.img,
-        // Set default time for each day
         ...daysOfWeek.reduce((acc, day) => {
           acc[day.value] = {
             start: moment(
@@ -201,7 +200,11 @@ const SalonForm = ({ onAddSalon, salon, id }) => {
         ))}
       </Form.Item>
       {id ? (
-        ""
+        <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Edit Salon
+        </Button>
+      </Form.Item>
       ) : (
         <Form.Item>
           <Button type="primary" htmlType="submit">
