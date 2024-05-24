@@ -98,19 +98,9 @@ function BarberShopPage(props) {
 
   const next = () => {
     // setCurrent(current + 1);
-    if (current === 0) {
-      // Call the create salon API
-      axios
-        .post("/api/salons", salon)
-        .then((response) => {
-          setSalon({ ...salon, id: response.data.id });
-          message.success("Salon created successfully!");
-          setCurrent(current + 1);
-        })
-        .catch((error) => {
-          console.error("Error creating salon:", error);
-          message.error("Failed to create salon.");
-        });
+    if (current === 0 && salon) {
+      // go to next page
+      setCurrent(current + 1);
     } else if (current === 1) {
       // Call the add employees API
       axios
