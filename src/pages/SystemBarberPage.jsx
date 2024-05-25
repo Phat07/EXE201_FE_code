@@ -28,6 +28,7 @@ function SystemBarberPage(props) {
           return { code: e.code, value: e.name, label: e.name };
         });
         setProvinces(mapper);
+        console.log(mapper);
       })
       .catch((error) => console.error("Error fetching provinces:", error));
   }, []);
@@ -46,6 +47,7 @@ function SystemBarberPage(props) {
             return { value: e?.name, label: e?.name };
           });
           setDistricts(mapper);
+          console.log(mapper, "Quan");
         })
         .catch((error) => console.error("Error fetching districts:", error));
     } else {
@@ -74,7 +76,7 @@ function SystemBarberPage(props) {
 
   const handleChange = (value) => {
     setSelectedProvince(value);
-    setSelectedDistrict('');
+    setSelectedDistrict("");
     setSelectedWard("");
   };
 
@@ -83,14 +85,14 @@ function SystemBarberPage(props) {
   };
 
   const handleSearch = () => {
-    document.body.style.overflow = 'hidden'; // Disable scrolling
-  
+    document.body.style.overflow = "hidden"; // Disable scrolling
+
     Modal.confirm({
-      title: 'Location Permission',
-      content: 'Do you want to allow access to your location?',
+      title: "Location Permission",
+      content: "Do you want to allow access to your location?",
       onOk() {
         setLoading(true); // Show loader only when 'Ok' is clicked
-  
+
         if ("geolocation" in navigator) {
           navigator.geolocation.getCurrentPosition(
             (pos) => {
@@ -101,29 +103,28 @@ function SystemBarberPage(props) {
                 .then((data) => setAdd(data.address))
                 .finally(() => {
                   setLoading(false); // Hide loader on success
-                  document.body.style.overflow = ''; // Enable scrolling
+                  document.body.style.overflow = ""; // Enable scrolling
                 });
               message.success("Thank you for enabling location services.");
             },
             (error) => {
               message.error("You have denied location access.");
               setLoading(false); // Hide loader on error
-              document.body.style.overflow = ''; // Enable scrolling
+              document.body.style.overflow = ""; // Enable scrolling
             }
           );
         } else {
           message.error("Geolocation is not supported by your browser.");
           setLoading(false); // Hide loader on error
-          document.body.style.overflow = ''; // Enable scrolling
+          document.body.style.overflow = ""; // Enable scrolling
         }
       },
       onCancel() {
         message.error("You have denied location access.");
-        document.body.style.overflow = ''; // Enable scrolling
-      }
+        document.body.style.overflow = ""; // Enable scrolling
+      },
     });
   };
-  
 
   return (
     <div>
@@ -152,7 +153,7 @@ function SystemBarberPage(props) {
 
           <div>
             <Select
-              value={selectedDistrict || 'District'}
+              value={selectedDistrict || "District"}
               style={{
                 width: 200,
               }}
@@ -173,7 +174,11 @@ function SystemBarberPage(props) {
           </p>
         </div>
       </div>
-      {loading && <div className="overlay" ><Loader /></div>}
+      {loading && (
+        <div className="overlay">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 }
