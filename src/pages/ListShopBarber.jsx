@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, List, Skeleton, Popover, Input } from "antd";
+import {
+  Avatar,
+  Button,
+  List,
+  Skeleton,
+  Popover,
+  Input,
+  Modal,
+  Flex,
+} from "antd";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
+import AddServiceForm from "../components/SalonShop/AddServiceForm";
+import AddEmployeeForm from "../components/SalonShop/AddEmployeeForm";
+import { MdDesignServices } from "react-icons/md";
+import { BsPersonCircle } from "react-icons/bs";
 
 const count = 3;
 const fakeDataUrl = `https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon`;
@@ -18,11 +31,17 @@ function ListShopBarber(props) {
   const [filterName, setFilterName] = useState("");
   const [filterLocation, setFilterLocation] = useState("");
 
-  const hide = () => {
+  //Employees and Services Modal
+  const [employees, setEmployees] = useState([]);
+  const [employeeModalVisible, setEmployeeModalVisible] = useState(false);
+  const [services, setServices] = useState([]);
+  const [serviceModalVisible, setServiceModalVisible] = useState(false);
+
+  const hidePopover = () => {
     setOpenPopoverId(null);
   };
 
-  const handleOpenChange = (newOpen, id) => {
+  const handleOpenPopover = (newOpen, id) => {
     setOpenPopoverId(newOpen ? id : null);
   };
 
@@ -115,33 +134,34 @@ function ListShopBarber(props) {
             <List.Item
               key={item.id}
               actions={[
-                <Link to={`/create_shop/${item.id}`} key="list-loadmore-edit">
+                <Link
+                  className="text-xl bg-indigo-300 p-3 text-zinc-100 rounded"
+                  to={`/create_shop/${item.id}`}
+                  key="list-loadmore-edit"
+                >
                   edit
                 </Link>,
                 <Popover
+                  key={"list-add-more"}
                   content={
-                    <>
-                      <Link
-                        to={`/create_shop/${item.id}`}
-                        key="list-loadmore-add-employees"
-                      >
-                        Add employees
-                      </Link>
-                      <Link
-                        to={`/create_shop/${item.id}`}
-                        key="list-loadmore-add-services"
-                      >
-                        Add services
-                      </Link>
-                      <a onClick={hide}>Close</a>
-                    </>
+                    <Flex gap="middle" vertical>
+                      <Button onClick={() => setEmployeeModalVisible(true)}>
+                        Add Employees
+                      </Button>
+                      <Button onClick={() => setServiceModalVisible(true)}>
+                        Add Services
+                      </Button>
+                      <a onClick={hidePopover}>Close</a>
+                    </Flex>
                   }
-                  title="Options"
-                  trigger="click"
+                  title="Add More"
+                  trigger="hover"
                   open={openPopoverId === item.id}
-                  onOpenChange={(newOpen) => handleOpenChange(newOpen, item.id)}
+                  onOpenChange={(newOpen) =>
+                    handleOpenPopover(newOpen, item.id)
+                  }
                 >
-                  <a type="primary">more</a>
+                  <Button type="primary">More</Button>
                 </Popover>,
               ]}
             >
@@ -158,6 +178,33 @@ function ListShopBarber(props) {
             </List.Item>
           )}
         />
+        <Modal
+          title="Add Employees"
+          open={employeeModalVisible}
+          onCancel={() => setEmployeeModalVisible(false)}
+          footer={<BsPersonCircle />}
+        >
+          <AddEmployeeForm
+            onAddEmployees={(employees) => {
+              setEmployees(employees);
+              setEmployeeModalVisible(false);
+            }}
+          />
+        </Modal>
+
+        <Modal
+          title="Add Services"
+          open={serviceModalVisible}
+          onCancel={() => setServiceModalVisible(false)}
+          footer={<MdDesignServices />}
+        >
+          <AddServiceForm
+            onAddServices={(services) => {
+              setServices(services);
+              setServiceModalVisible(false);
+            }}
+          />
+        </Modal>
       </div>
     </div>
   );
