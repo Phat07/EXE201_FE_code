@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
@@ -7,9 +7,10 @@ import BarberPage from "./pages/BarberPage";
 import BarberShopPage from "./pages/BarberShopPage";
 import SystemBarberPage from "./pages/SystemBarberPage";
 import ListShopBarber from "./pages/ListShopBarber";
+import SalonDetail from "./pages/SalonDetail";
 
 function App() {
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
 
   return (
     <>
@@ -21,6 +22,7 @@ function App() {
         <Route path="/create_shop/:id" element={<BarberShopPage />} />
         <Route path="/system_shop" element={<SystemBarberPage />} />
         <Route path="/list_shop" element={<ListShopBarber />} />
+        <Route path="/salon_detail" element={<SalonDetail />} />
       </Routes>
       {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
     </>
