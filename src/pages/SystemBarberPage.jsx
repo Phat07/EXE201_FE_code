@@ -10,7 +10,7 @@ import {
   Marker,
   InfoWindow,
 } from "@react-google-maps/api";
-import GoogleMapReact from 'google-map-react';
+import GoogleMapReact from "google-map-react";
 import "../css/baber.css";
 
 const mapContainerStyle = {
@@ -50,7 +50,13 @@ const sampleSalons = [
   },
   // Add more salons as needed
 ];
-
+const defaultProps = {
+  center: {
+    lat: 10.99835602,
+    lng: 77.01502627,
+  },
+  zoom: 11,
+};
 function SystemBarberPage(props) {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -63,6 +69,8 @@ function SystemBarberPage(props) {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
+
+  const [location, setLocation] = useState("");
 
   const [add, setAdd] = useState("");
 
@@ -133,6 +141,7 @@ function SystemBarberPage(props) {
   const handleSearch = () => {
     document.body.style.overflow = "hidden"; // Disable scrolling
 
+
     Modal.confirm({
       title: "Location Permission",
       content: "Do you want to allow access to your location?",
@@ -189,6 +198,135 @@ function SystemBarberPage(props) {
     setSelectedSalon(salon);
   };
 
+  // useEffect(() => {
+  //   const options = {
+  //     enableHighAccuracy: true, // Request high accuracy location
+  //     timeout: 5000, // Set a timeout of 5 seconds
+  //   };
+  
+  //   navigator.geolocation.getCurrentPosition(
+  //     (pos) => {
+  //       console.log('pos', pos);
+  //       const { latitude, longitude } = pos.coords;
+  //       setCurrentLocation({ lat: latitude, lng: longitude });
+  //       setLocation({ lat: latitude, lng: longitude });
+  //       fetchNearbySalons(latitude, longitude);
+  //       const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+  //       fetch(url)
+  //         .then((res) => res.json())
+  //         .then((data) => {
+  //           console.log("data", data);
+  //           setAdd(data.address);
+  //         })
+  //         .finally(() => {
+  //           setLoading(false); // Hide loader on success
+  //           document.body.style.overflow = ""; // Enable scrolling
+  //         });
+  //       message.success("Thank you for enabling location services.");
+  //     },
+  //     (error) => {
+  //       // Handle errors
+  //       if (error.code === error.PERMISSION_DENIED) {
+  //         message.error("You have denied location access.");
+  //       } else {
+  //         message.error("Unable to retrieve your location.");
+  //       }
+  //       setLoading(false); // Hide loader on error
+  //       document.body.style.overflow = ""; // Enable scrolling
+  //     },
+  //     options // Pass options to getCurrentPosition
+  //   );
+  // }, []);
+  useEffect(() => {
+    const options = {
+      enableHighAccuracy: true, // Request high accuracy location
+      timeout: 10000, // Increase the timeout to 10 seconds
+    };
+  
+    const successCallback = (pos) => {
+      console.log('pos', pos);
+      const { latitude, longitude } = pos.coords;
+      setCurrentLocation({ lat: latitude, lng: longitude });
+      setLocation({ lat: latitude, lng: longitude });
+      fetchNearbySalons(latitude, longitude);
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("data", data);
+          setAdd(data.address);
+        })
+        .finally(() => {
+          setLoading(false); // Hide loader on success
+          document.body.style.overflow = ""; // Enable scrolling
+        });
+      message.success("Thank you for enabling location services.");
+    };
+  
+    const errorCallback = (error) => {
+      // Handle errors
+      if (error.code === error.PERMISSION_DENIED) {
+        message.error("You have denied location access.");
+      } else {
+        message.error("Unable to retrieve your location.");
+      }
+      setLoading(false); // Hide loader on error
+      document.body.style.overflow = ""; // Enable scrolling
+    };
+  
+    const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, options);
+  
+    return () => {
+      // Clean up watchPosition when component unmounts
+      navigator.geolocation.clearWatch(watchId);
+    };
+  }, []);
+  
+  // // 
+  // const [ipAddress, setIpAddress] = useState('')
+  // const [geoInfo, setGeoInfo] = useState({})
+
+  // const getVisitorIP = async()=>{
+  //   try {
+  //     const response = await fetch('https://api.ipify.org');
+  //     const data= await response.text();
+  //     setIpAddress(data)
+  //   } catch (error) {
+  //     console.log('Fail to fetch api', error);
+  //   }
+  // }
+
+  // useEffect(()=>{
+  //   getVisitorIP()
+  // })
+
+
+  // const fetchIPInfo = async()=>{
+  //   try {
+  //     // const response = await fetch(`http://ip-api.com/json/${ipAddress}`)
+  //     const response = await fetch(`http://ip-api.com/json`);
+  //     const data = await response.json()
+  //     // setGeoInfo(data)
+  //     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${data.lat}&lon=${data.lon}`;
+  //     fetch(url)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         console.log("data22", data);
+  //         setGeoInfo(data)
+  //       })
+  //       .finally(() => {
+  //         // setLoading(false); // Hide loader on success
+  //         // document.body.style.overflow = ""; // Enable scrolling
+  //       });
+  //   } catch (error) {
+  //     console.log('failed to location infor', error);
+  //   }
+  // }
+
+
+  // console.log("goe",geoInfo);
+  // 
+
   return (
     <div>
       <Header />
@@ -202,6 +340,10 @@ function SystemBarberPage(props) {
             <Button type="primary" onClick={handleSearch}>
               Find a salon nearby
             </Button>
+                  {/* <Button type="primary" onClick={fetchIPInfo}>
+                    Find a salon nearby  2333
+                  </Button>
+                  <p>{geoInfo.name}</p> */}
           </div>
           <div>
             <Select
@@ -255,13 +397,13 @@ function SystemBarberPage(props) {
             )}
           </div>
           <div style={{ height: "500px", width: "600px" }}>
-            <LoadScript googleMapsApiKey="AIzaSyDPd9amUMvfU5Ete2_iugs172kmLn1WFvo">
+            {/* <LoadScript googleMapsApiKey="AIzaSyDPd9amUMvfU5Ete2_iugs172kmLn1WFvo">
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={currentLocation}
                 zoom={10}
               >
-                {sampleSalons.map((salon) => (
+                {salons.map((salon) => (
                   <Marker
                     key={salon.id}
                     position={{ lat: salon.latitude, lng: salon.longitude }}
@@ -283,8 +425,22 @@ function SystemBarberPage(props) {
                   </InfoWindow>
                 )}
               </GoogleMap>
-            </LoadScript>
-           
+            </LoadScript> */}
+
+            <GoogleMapReact
+              bootstrapURLKeys={{
+                key: "AIzaSyACxn3eKIA25sQoFce2rmHqv0HLfJbVfDY",
+              }}
+              defaultCenter={location}
+              defaultZoom={11}
+              center={location}
+            >
+              {/* <AnyReactComponent
+                lat={59.955413}
+                lng={30.337844}
+                text="My Marker"
+              /> */}
+            </GoogleMapReact>
           </div>
         </div>
         <p>
