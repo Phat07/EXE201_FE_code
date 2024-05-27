@@ -85,3 +85,10 @@
   flex-basis: 20%;
 }
 
+.sticky-col {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0; /* Adjust as needed for your header height */
+  height: 100vh;
+  overflow-y: auto;
+}

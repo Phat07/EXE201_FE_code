@@ -469,7 +469,8 @@ function SalonDetail(props) {
                   />
                 </div>
               </Col>
-              <Col xs={24} md={7}>
+              <div></div>
+              <Col xs={24} md={7} className="sticky-col">
                 <div
                   style={{
                     padding: "24px",
