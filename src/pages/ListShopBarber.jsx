@@ -11,10 +11,16 @@ import {
 } from "antd";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
-import AddServiceForm from "../components/SalonShop/AddServiceForm";
-import AddEmployeeForm from "../components/SalonShop/AddEmployeeForm";
+import AddServiceForm from "../components/SalonShop/ServiceForm";
+import AddEmployeeForm from "../components/SalonShop/EmployeeForm";
 import { MdDesignServices } from "react-icons/md";
 import { BsPersonCircle } from "react-icons/bs";
+import {
+  EditFilled,
+  EditOutlined,
+  MoreOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 
 const count = 3;
 const fakeDataUrl = `https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/salon`;
@@ -101,7 +107,6 @@ function ListShopBarber(props) {
 
   return (
     <div>
-      <Header />
       <div
         style={{
           marginTop: "175px",
@@ -134,12 +139,10 @@ function ListShopBarber(props) {
             <List.Item
               key={item.id}
               actions={[
-                <Link
-                  className="text-xl bg-indigo-300 p-3 text-zinc-100 rounded"
-                  to={`/create_shop/${item.id}`}
-                  key="list-loadmore-edit"
-                >
-                  edit
+                <Link to={`/create_shop/${item.id}`} key="list-loadmore-edit">
+                  <Button ghost icon={<EditOutlined />} type="text">
+                    Edit
+                  </Button>
                 </Link>,
                 <Popover
                   key={"list-add-more"}
@@ -161,7 +164,9 @@ function ListShopBarber(props) {
                     handleOpenPopover(newOpen, item.id)
                   }
                 >
-                  <Button type="primary">More</Button>
+                  <Button type="primary" icon={<PlusCircleOutlined />}>
+                    Add More
+                  </Button>
                 </Popover>,
               ]}
             >
@@ -180,6 +185,7 @@ function ListShopBarber(props) {
         />
         <Modal
           title="Add Employees"
+          width={1000}
           open={employeeModalVisible}
           onCancel={() => setEmployeeModalVisible(false)}
           footer={<BsPersonCircle />}

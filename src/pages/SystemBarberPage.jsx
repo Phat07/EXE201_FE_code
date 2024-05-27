@@ -191,7 +191,6 @@ function SystemBarberPage(props) {
 
   return (
     <div>
-      <Header />
       <div className="system-salon__container">
         <div className="flex justify-between">
           <div

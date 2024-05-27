@@ -30,7 +30,6 @@ function BarberPage(props) {
   }, []);
   return (
     <div>
-      <Header />
       <section
         className="section hero has-before has-bg-image"
         id="home"

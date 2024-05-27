@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Space, Upload } from 'antd';
-import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import React, { useState } from "react";
+import { Form, Input, Button, Space, Upload } from "antd";
+import {
+  MinusCircleOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 
 const AddServiceForm = ({ onAddServices }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
 
   const onFinish = (values) => {
-    const services = values.services.map(service => ({
+    const services = values.services.map((service) => ({
       ...service,
-      image: fileList.find(file => file.name === service.name)?.url,
+      image: fileList.find((file) => file.name === service.name)?.url,
     }));
     onAddServices(services);
     form.resetFields();
@@ -18,7 +22,7 @@ const AddServiceForm = ({ onAddServices }) => {
 
   const handleUploadChange = ({ fileList }) => {
     // Generate URL for preview (this is for demonstration purposes only)
-    const updatedFileList = fileList.map(file => ({
+    const updatedFileList = fileList.map((file) => ({
       ...file,
       url: URL.createObjectURL(file.originFileObj),
     }));
@@ -31,38 +35,46 @@ const AddServiceForm = ({ onAddServices }) => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, fieldKey, ...restField }) => (
-              <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+              <Space
+                key={key}
+                style={{ display: "flex", marginBottom: 8 }}
+                align="baseline"
+              >
                 <Form.Item
                   {...restField}
-                  name={[name, 'name']}
-                  fieldKey={[fieldKey, 'name']}
-                  rules={[{ required: true, message: 'Please enter service name' }]}
+                  name={[name, "name"]}
+                  fieldKey={[fieldKey, "name"]}
+                  rules={[
+                    { required: true, message: "Please enter service name" },
+                  ]}
                 >
                   <Input placeholder="Service Name" />
                 </Form.Item>
                 <Form.Item
                   {...restField}
-                  name={[name, 'description']}
-                  fieldKey={[fieldKey, 'description']}
-                  rules={[{ required: true, message: 'Please enter description' }]}
+                  name={[name, "description"]}
+                  fieldKey={[fieldKey, "description"]}
+                  rules={[
+                    { required: true, message: "Please enter description" },
+                  ]}
                 >
                   <Input placeholder="Description" />
                 </Form.Item>
                 <Form.Item
                   {...restField}
-                  name={[name, 'price']}
-                  fieldKey={[fieldKey, 'price']}
-                  rules={[{ required: true, message: 'Please enter price' }]}
+                  name={[name, "price"]}
+                  fieldKey={[fieldKey, "price"]}
+                  rules={[{ required: true, message: "Please enter price" }]}
                 >
                   <Input placeholder="Price" />
                 </Form.Item>
                 <Form.Item
                   {...restField}
-                  name={[name, 'image']}
-                  fieldKey={[fieldKey, 'image']}
+                  name={[name, "image"]}
+                  fieldKey={[fieldKey, "image"]}
                 >
                   <Upload
-                  multiple
+                    multiple
                     listType="picture"
                     onChange={handleUploadChange}
                     beforeUpload={() => false}
@@ -74,7 +86,12 @@ const AddServiceForm = ({ onAddServices }) => {
               </Space>
             ))}
             <Form.Item>
-              <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+              >
                 Add Service
               </Button>
             </Form.Item>

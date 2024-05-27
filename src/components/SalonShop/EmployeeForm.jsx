@@ -74,7 +74,12 @@ const AddEmployeeForm = ({ onAddEmployees }) => {
                     { required: true, message: "Please enter date of birth" },
                   ]}
                 >
-                  <DatePicker placeholder="Date of Birth" />
+                  <DatePicker
+                    disabledDate={(current) =>
+                      current && current.isAfter(new Date())
+                    }
+                    placeholder="Date of Birth"
+                  />
                 </Form.Item>
                 <Form.Item
                   {...restField}
@@ -125,7 +130,6 @@ const AddEmployeeForm = ({ onAddEmployees }) => {
                 <Form.Item
                   name={[name, "images"]}
                   fieldKey={[fieldKey, "images"]}
-                  label="Upload Images"
                 >
                   <Upload
                     multiple

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Steps, Button, message, Modal } from "antd";
 import Header from "../components/Header";
 import SalonForm from "../components/SalonShop/SalonForm";
-import AddEmployeeForm from "../components/SalonShop/AddEmployeeForm";
-import AddServiceForm from "../components/SalonShop/AddServiceForm";
+import AddEmployeeForm from "../components/SalonShop/EmployeeForm";
+import AddServiceForm from "../components/SalonShop/ServiceForm";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -158,7 +158,6 @@ function BarberShopPage(props) {
 
   return (
     <div>
-      <Header />
       <div
         style={{
           marginTop: "175px",
