@@ -5,11 +5,13 @@ import {
   Carousel,
   Col,
   Collapse,
+  Divider,
   Layout,
   List,
   Pagination,
   Row,
   Space,
+  Typography,
 } from "antd";
 import { Content } from "antd/es/layout/layout";
 import {
@@ -20,6 +22,7 @@ import {
 } from "@ant-design/icons";
 
 const { Panel } = Collapse;
+const { Title, Text } = Typography;
 
 const imageArray1 = [
   "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
@@ -27,6 +30,16 @@ const imageArray1 = [
   "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   // Thêm các link ảnh khác nếu có
+];
+
+const businessSchedule = [
+  { day: "Monday", hours: "10:00 AM - 06:00 PM" },
+  { day: "Tuesday", hours: "Closed" },
+  { day: "Wednesday", hours: "10:00 AM - 08:00 PM" },
+  { day: "Thursday", hours: "10:00 AM - 08:00 PM" },
+  { day: "Friday", hours: "07:00 AM - 08:30 PM" },
+  { day: "Saturday", hours: "07:00 AM - 08:30 PM" },
+  { day: "Sunday", hours: "09:00 AM - 05:00 PM" },
 ];
 
 const services = [
@@ -251,7 +264,6 @@ function SalonDetail(props) {
                                 Book
                               </Button>,
                             ]}
-                            style={{ borderBottom: "none" }}
                           >
                             <List.Item.Meta
                               title={
@@ -286,8 +298,7 @@ function SalonDetail(props) {
                             <div>
                               <div>{renderStars(feedback.stars)}</div>
                               <p>
-                                {feedback.user}
-                                {" "}•{" "}
+                                {feedback.user} •{" "}
                                 {new Date(
                                   feedback.timestamp
                                 ).toLocaleDateString("en-US", {
@@ -322,24 +333,50 @@ function SalonDetail(props) {
                     padding: "24px",
                     marginLeft: "5rem",
                     background: "#fff",
+                    borderRadius: "8px",
                   }}
                 >
-                  <h2>OMAR KINGSMENT BARBER LOUNGE</h2>
-                  <p>960 Lincoln Hwy, Schererville, 46375</p>
-                  <p>
-                    CASH ONLY, CASH ONLY, NO CARD, NO MOBILE PAYMENT CASH ONLY
-                  </p>
-                  <Button type="primary" href="tel:+12199868410">
-                    Call
-                  </Button>
-                  <h3>Contact & Business Hours</h3>
-                  <p>Sunday: 09:00 AM - 05:00 PM</p>
-                  <p>Monday: 10:00 AM - 06:00 PM</p>
-                  <p>Tuesday: Closed</p>
-                  <p>Wednesday: 10:00 AM - 08:00 PM</p>
-                  <p>Thursday: 10:00 AM - 08:00 PM</p>
-                  <p>Friday: 07:00 AM - 08:30 PM</p>
-                  <p>Saturday: 07:00 AM - 08:30 PM</p>
+                  <div>
+                    <Title level={4}>Address</Title>
+                    <Text>960 Lincoln Hwy, Schererville, 46375</Text>
+                    <Divider />
+                  </div>
+
+                  <div>
+                    <Title level={4}>About Us</Title>
+                    <Text>
+                      CASH ONLY, CASH ONLY, NO CARD, NO MOBILE PAYMENT CASH ONLY
+                    </Text>
+                    <Divider />
+                  </div>
+
+                  <div>
+                    <Title level={4}>Contact & Business Hours</Title>
+
+                    <Row justify="space-between" align="middle">
+                      <Text>+12199868410</Text>
+                      <Button type="primary" href="tel:+12199868410">
+                        Call
+                      </Button>
+                    </Row>
+                    <Divider />
+                  </div>
+
+                  <div>
+                    {businessSchedule.map((schedule, index) => (
+                      <Row justify="space-between" key={index}>
+                        <Text strong>{schedule.day}:</Text>
+                        <Text>{schedule.hours}</Text>
+                      </Row>
+                    ))}
+                    <Divider />
+                  </div>
+
+                  <div>
+                    <Button danger block>
+                      Report Shop
+                    </Button>
+                  </div>
                 </div>
               </Col>
             </Row>
