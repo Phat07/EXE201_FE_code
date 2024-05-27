@@ -392,7 +392,8 @@ function SalonDetail(props) {
                     style={{
                       fontSize: "1.8rem",
                       fontWeight: "bold",
-                      marginBottom: "2rem",
+                      marginBottom: "1rem",
+                      marginTop: "1rem",
                     }}
                   >
                     Feedback
