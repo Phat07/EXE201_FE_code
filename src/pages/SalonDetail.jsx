@@ -3,12 +3,15 @@ import Header from "../components/Header";
 import {
   Button,
   Carousel,
+  Checkbox,
   Col,
   Collapse,
   Divider,
   Layout,
   List,
+  Modal,
   Pagination,
+  Progress,
   Row,
   Space,
   Typography,
@@ -20,6 +23,7 @@ import {
   StarFilled,
   StarOutlined,
 } from "@ant-design/icons";
+import "../css/salonDetail.css";
 
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
@@ -29,7 +33,14 @@ const imageArray1 = [
   "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
-  // Thêm các link ảnh khác nếu có
+];
+
+const ourWorkImages = [
+  "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
 ];
 
 const businessSchedule = [
@@ -46,7 +57,6 @@ const services = [
   { name: "Regular cut", price: "$35.00", duration: "25min" },
   { name: "Haircut w beard", price: "$40.00", duration: "30min" },
   { name: "Kids haircut", price: "$30.00", duration: "20min" },
-  // Thêm các dịch vụ khác nếu có
 ];
 
 const feedbacks = [
@@ -108,6 +118,38 @@ const feedbacks = [
   },
 ];
 
+const reportOptions = [
+  "Spam or misleading",
+  "Inappropriate content",
+  "Hate speech or graphic violence",
+  "Harassment or bullying",
+];
+
+function renderStars(stars) {
+  const filledStars = Math.floor(stars);
+  const hasHalfStar = stars % 1 !== 0;
+
+  const starIcons = [];
+
+  for (let i = 0; i < filledStars; i++) {
+    starIcons.push(<StarFilled key={i} style={{ color: "#FFD700" }} />);
+  }
+
+  if (hasHalfStar) {
+    starIcons.push(
+      <StarOutlined key={filledStars} style={{ color: "#FFD700" }} />
+    );
+  }
+
+  const remainingStars = 5 - filledStars - (hasHalfStar ? 1 : 0);
+
+  for (let i = 0; i < remainingStars; i++) {
+    starIcons.push(<StarOutlined key={filledStars + i + 1} />);
+  }
+
+  return starIcons;
+}
+
 function SalonDetail(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5; // Số lượng phản hồi trên mỗi trang
@@ -117,31 +159,52 @@ function SalonDetail(props) {
     indexOfFirstFeedback,
     indexOfLastFeedback
   );
+  const [isReportModalVisible, setIsReportModalVisible] = useState(false);
+  const [selectedReports, setSelectedReports] = useState([]);
+  const [showAllWork, setShowAllWork] = useState(false);
 
-  function renderStars(stars) {
-    const filledStars = Math.floor(stars);
-    const hasHalfStar = stars % 1 !== 0;
+  const showReportModal = () => {
+    setIsReportModalVisible(true);
+  };
 
-    const starIcons = [];
+  const handleCancel = () => {
+    setIsReportModalVisible(false);
+  };
 
-    for (let i = 0; i < filledStars; i++) {
-      starIcons.push(<StarFilled key={i} style={{ color: "#FFD700" }} />);
-    }
+  const handleReport = () => {
+    console.log("Reported items:", selectedReports);
+    setIsReportModalVisible(false);
+  };
 
-    if (hasHalfStar) {
-      starIcons.push(
-        <StarOutlined key={filledStars} style={{ color: "#FFD700" }} />
-      );
-    }
+  const onChangeCheckbox = (checkedValues) => {
+    setSelectedReports(checkedValues);
+  };
 
-    const remainingStars = 5 - filledStars - (hasHalfStar ? 1 : 0);
+  const calculateRatingDistribution = (feedbacks) => {
+    const totalReviews = feedbacks.length;
+    const ratingDistribution = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    };
 
-    for (let i = 0; i < remainingStars; i++) {
-      starIcons.push(<StarOutlined key={filledStars + i + 1} />);
-    }
+    let totalStars = 0;
 
-    return starIcons;
-  }
+    feedbacks.forEach((feedback) => {
+      totalStars += feedback.stars;
+      const roundedStars = Math.round(feedback.stars);
+      ratingDistribution[roundedStars]++;
+    });
+
+    const averageRating = (totalStars / totalReviews).toFixed(1);
+
+    return { averageRating, ratingDistribution, totalReviews };
+  };
+
+  const { averageRating, ratingDistribution, totalReviews } =
+    calculateRatingDistribution(feedbacks);
 
   return (
     <div>
@@ -163,30 +226,9 @@ function SalonDetail(props) {
                 style={{ marginBottom: "16px", marginLeft: "20rem" }}
               >
                 <div>
-                  <div
-                    className="rating-overlay"
-                    style={{
-                      position: "absolute",
-                      right: "10px",
-                      background: "rgba(0, 0, 0, 0.6)",
-                      color: "white",
-                      padding: "10px",
-                      borderRadius: "8px",
-                      textAlign: "right",
-                      zIndex: "2",
-                    }}
-                  >
-                    <div
-                      className="rating-score"
-                      style={{
-                        textAlign: "center",
-                        fontSize: "2rem",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      5.0
-                    </div>
-                    <div className="rating-count">208 reviews</div>
+                  <div className="rating-overlay">
+                    <div className="rating-score">5.0</div>
+                    <div>208 reviews</div>
                   </div>
                   <div>
                     <Carousel autoplay>
@@ -195,30 +237,18 @@ function SalonDetail(props) {
                           <img
                             src={image}
                             alt={`image${index}`}
-                            style={{
-                              width: "100%",
-                              height: "auto",
-                              borderRadius: "8px",
-                            }}
+                            className="carousel-image"
                           />
                         </div>
                       ))}
                     </Carousel>
                   </div>
                 </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginTop: "16px",
-                  }}
-                >
+                <div className="space-between">
                   <h2
                     style={{
                       fontSize: "2rem",
                       fontWeight: "bold",
-                      margin: 0,
                     }}
                   >
                     OMAR KINGSMENT BARBER LOUNGE
@@ -237,6 +267,7 @@ function SalonDetail(props) {
                 <div>
                   <Collapse
                     bordered={false}
+                    defaultActiveKey={["1"]}
                     expandIconPosition="end"
                     className="custom-collapse"
                     style={{
@@ -247,7 +278,7 @@ function SalonDetail(props) {
                     <Panel
                       header={
                         <span
-                          style={{ fontSize: "1.5rem", fontWeight: "bold" }}
+                          style={{ fontSize: "1.8rem", fontWeight: "bold" }}
                         >
                           Services
                         </span>
@@ -285,9 +316,119 @@ function SalonDetail(props) {
                   </Collapse>
                 </div>
                 <div>
-                  <h2 style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-                    Feedbacks
+                  <div className="our-work-section">
+                    <h2
+                      style={{
+                        fontSize: "1.8rem",
+                        fontWeight: "bold",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      See Our Work
+                    </h2>
+                    <Row gutter={16}>
+                      <Col xs={24} sm={12}>
+                        <img
+                          src={ourWorkImages[0]}
+                          alt="Main Work"
+                          style={{
+                            width: "100%",
+                            height: "auto",
+                            borderRadius: "8px",
+                          }}
+                        />
+                      </Col>
+                      <Col xs={24} sm={12}>
+                        <Row gutter={[8, 8]}>
+                          {ourWorkImages.slice(1, 5).map((image, index) => (
+                            <Col key={index} span={12}>
+                              <img
+                                src={image}
+                                alt={`Work ${index + 1}`}
+                                style={{
+                                  width: "100%",
+                                  height: "auto",
+                                  borderRadius: "8px",
+                                }}
+                              />
+                            </Col>
+                          ))}
+                        </Row>
+                      </Col>
+                    </Row>
+                    <Button
+                      block
+                      onClick={() => setShowAllWork(true)}
+                      style={{ marginTop: "16px" }}
+                    >
+                      SEE ALL WORK
+                    </Button>
+                  </div>
+
+                  <div>
+                    <Modal
+                      title="All Our Work"
+                      visible={showAllWork}
+                      onCancel={() => setShowAllWork(false)}
+                      footer={null}
+                      width={800}
+                    >
+                      <Carousel arrows infinite={false}>
+                        {ourWorkImages.map((image, index) => (
+                          <div key={index}>
+                            <img
+                              src={image}
+                              alt={`Work ${index}`}
+                              style={{ width: "100%", height: "auto" }}
+                            />
+                          </div>
+                        ))}
+                      </Carousel>
+                    </Modal>
+                  </div>
+                </div>
+                <div>
+                  <h2
+                    style={{
+                      fontSize: "1.8rem",
+                      fontWeight: "bold",
+                      marginBottom: "2rem",
+                    }}
+                  >
+                    Feedback
                   </h2>
+                </div>
+                <div className="rating-stats-container">
+                  <div className="rating-summary">
+                    <h3>
+                      <span>{averageRating}</span>/5
+                    </h3>
+                    {renderStars(parseFloat(averageRating))}
+                    <p>Based on {totalReviews} reviews</p>
+                  </div>
+                  <div className="divider-line"></div>
+                  <div className="rating-distribution">
+                    {[1, 2, 3, 4, 5].reverse().map((starValue) => (
+                      <div key={starValue} className="rating-bar-container">
+                        <span className="star-value">
+                          {starValue} <StarFilled style={{ color: "gold" }} />
+                        </span>
+                        <Progress
+                          className="rating-progress-bar"
+                          percent={
+                            (ratingDistribution[starValue] / totalReviews) * 100
+                          }
+                          status="active"
+                          showInfo={false}
+                        />
+                        <span className="review-count">
+                          {ratingDistribution[starValue]}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
                   <List
                     itemLayout="horizontal"
                     dataSource={currentFeedbacks}
@@ -351,18 +492,16 @@ function SalonDetail(props) {
                   </div>
 
                   <div>
-                    <Title level={4}>Contact & Business Hours</Title>
-
+                    <Title level={4}>Contact Us</Title>
                     <Row justify="space-between" align="middle">
                       <Text>+12199868410</Text>
-                      <Button type="primary" href="tel:+12199868410">
-                        Call
-                      </Button>
+                      <Button type="primary">Call</Button>
                     </Row>
                     <Divider />
                   </div>
 
                   <div>
+                    <Title level={4}>Business Hours</Title>
                     {businessSchedule.map((schedule, index) => (
                       <Row justify="space-between" key={index}>
                         <Text strong>{schedule.day}:</Text>
@@ -373,9 +512,65 @@ function SalonDetail(props) {
                   </div>
 
                   <div>
-                    <Button danger block>
+                    <Button danger block onClick={showReportModal}>
                       Report Shop
                     </Button>
+                  </div>
+
+                  <div>
+                    <Modal
+                      title="Report Shop"
+                      centered
+                      visible={isReportModalVisible}
+                      onOk={handleReport}
+                      onCancel={handleCancel}
+                      okText="Report"
+                      cancelText="Cancel"
+                      width={400}
+                      style={{ textAlign: "center" }}
+                      footer={null}
+                    >
+                      <Checkbox.Group
+                        style={{ width: "100%" }}
+                        onChange={onChangeCheckbox}
+                      >
+                        {reportOptions.map((option, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              display: "block",
+                              textAlign: "left",
+                              width: "100%",
+                              padding: "8px 0",
+                            }}
+                          >
+                            <Checkbox value={option}>{option}</Checkbox>
+                            {index < reportOptions.length - 1 && <Divider />}
+                          </div>
+                        ))}
+                      </Checkbox.Group>
+                      <div
+                        style={{
+                          textAlign: "center",
+                          paddingTop: "10px",
+                        }}
+                      >
+                        <Button
+                          key="back"
+                          onClick={handleCancel}
+                          style={{ marginRight: "8px" }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          key="submit"
+                          type="primary"
+                          onClick={handleReport}
+                        >
+                          Report
+                        </Button>
+                      </div>
+                    </Modal>
                   </div>
                 </div>
               </Col>
