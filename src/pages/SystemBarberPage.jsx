@@ -11,7 +11,7 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import GoogleMapReact from "google-map-react";
-import GoogleMapReact from "google-map-react";
+
 import "../css/baber.css";
 
 const mapContainerStyle = {
