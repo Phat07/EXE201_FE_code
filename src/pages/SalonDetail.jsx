@@ -174,6 +174,7 @@ function SalonDetail(props) {
   const [additionalServices, setAdditionalServices] = useState([]);
   const [timeSlots, setTimeSlots] = useState([]);
   const [scrollIndex, setScrollIndex] = useState(0);
+  const [showServiceList, setShowServiceList] = useState(false);
 
   const handleScroll = (direction, containerRef) => {
     const maxScroll =
@@ -243,8 +244,12 @@ function SalonDetail(props) {
     setSelectedStaff(staff); // Hàm để cập nhật selectedStaff
   };
 
-  const handleAddAnotherService = () => {
-    setAdditionalServices([...additionalServices, selectedService]);
+  const handleServiceSelect = (service) => {
+    if (additionalServices.includes(service)) {
+      setAdditionalServices(additionalServices.filter((s) => s !== service));
+    } else {
+      setAdditionalServices([...additionalServices, service]);
+    }
   };
 
   const calculateTotal = () => {
@@ -419,177 +424,231 @@ function SalonDetail(props) {
                   <Modal
                     title="Book Service"
                     visible={isBookingModalVisible}
-                    onCancel={() => setIsBookingModalVisible(false)}
+                    onCancel={() => {
+                      setIsBookingModalVisible(false);
+                      setShowServiceList(false);
+                    }}
                     footer={null}
                     width={800}
                   >
-                    <div>
-                      <Divider />
-                      <div className="scroll-container">
-                        <button
-                          className="arrow-button"
-                          onClick={() => handleScroll("left", dateContainerRef)}
+                    {showServiceList ? (
+                      <div>
+                        <Title level={4}>Select Additional Services</Title>
+                        <List
+                          itemLayout="horizontal"
+                          dataSource={services}
+                          renderItem={(service, index) => (
+                            <List.Item
+                              key={index} // Thêm thuộc tính key
+                              actions={[
+                                <Checkbox
+                                  key={`checkbox-${index}`} // Thêm thuộc tính key cho Checkbox
+                                  checked={additionalServices.includes(service)}
+                                  onChange={() => handleServiceSelect(service)}
+                                >
+                                  Add
+                                </Checkbox>,
+                              ]}
+                            >
+                              <List.Item.Meta
+                                title={
+                                  <span
+                                    style={{
+                                      fontSize: "1.3rem",
+                                    }}
+                                  >
+                                    {service.name}
+                                  </span>
+                                }
+                                description={`${service.price} • ${service.duration}`}
+                              />
+                            </List.Item>
+                          )}
+                          style={{ backgroundColor: "transparent" }}
+                        />
+                        <Button
+                          type="dashed"
+                          block
+                          style={{ marginTop: "16px" }}
+                          onClick={() => setShowServiceList(false)}
                         >
-                          <LeftOutlined />
-                        </button>
-                        <div className="scroll-wrapper" ref={dateContainerRef}>
-                          <div className="scroll-content">
-                            {currentMonthDays.map((day, index) => (
-                              <Button
-                                key={index}
-                                onClick={() => handleDateSelect(day)}
-                                className={
-                                  selectedDate &&
-                                  selectedDate.toDateString() ===
-                                    day.toDateString()
-                                    ? "selected"
-                                    : ""
-                                }
-                              >
-                                {day.toDateString().slice(0, 10)}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                        <button
-                          className="arrow-button"
-                          onClick={() =>
-                            handleScroll("right", dateContainerRef)
-                          }
-                        >
-                          <RightOutlined />
-                        </button>
-                      </div>
-                      <Divider />
-
-                      {selectedDate && (
-                        <>
-                          <div className="time-picker">
-                            <div className="time-selector">
-                              <Button
-                                onClick={() =>
-                                  setTimeSlots(generateTimeSlots(8, 12, 15))
-                                }
-                                className={
-                                  timeSlots.length &&
-                                  timeSlots[0].getHours() === 8
-                                    ? "selected"
-                                    : ""
-                                }
-                              >
-                                Morning
-                              </Button>
-                              <Button
-                                onClick={() =>
-                                  setTimeSlots(generateTimeSlots(13, 17, 15))
-                                }
-                                className={
-                                  timeSlots.length &&
-                                  timeSlots[0].getHours() === 13
-                                    ? "selected"
-                                    : ""
-                                }
-                              >
-                                Afternoon
-                              </Button>
-                              <Button
-                                onClick={() =>
-                                  setTimeSlots(generateTimeSlots(19, 22, 15))
-                                }
-                                className={
-                                  timeSlots.length &&
-                                  timeSlots[0].getHours() === 19
-                                    ? "selected"
-                                    : ""
-                                }
-                              >
-                                Evening
-                              </Button>
-                            </div>
-                            {timeSlots.length > 0 && (
-                              <>
-                                <Divider />
-                                <div className="scroll-container">
-                                  <button
-                                    className="arrow-button"
-                                    onClick={() =>
-                                      handleScroll("left", timeContainerRef)
-                                    }
-                                  >
-                                    <LeftOutlined />
-                                  </button>
-                                  <div
-                                    className="scroll-wrapper"
-                                    ref={timeContainerRef}
-                                  >
-                                    <div className="scroll-content">
-                                      {timeSlots.map((slot, index) => (
-                                        <Button
-                                          key={index}
-                                          onClick={() =>
-                                            handleTimeSlotSelect(slot)
-                                          }
-                                          className={
-                                            selectedTimeSlot === slot
-                                              ? "selected"
-                                              : ""
-                                          }
-                                        >
-                                          {slot.toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                          })}
-                                        </Button>
-                                      ))}
-                                    </div>
-                                  </div>
-                                  <button
-                                    className="arrow-button"
-                                    onClick={() =>
-                                      handleScroll("right", timeContainerRef)
-                                    }
-                                  >
-                                    <RightOutlined />
-                                  </button>
-                                </div>
-                              </>
-                            )}
-                          </div>
-                          <Divider />
-                        </>
-                      )}
-
-                      {selectedTimeSlot && (
-                        <>
-                          <Select
-                            placeholder="Select a staff"
-                            style={{ width: "100%" }}
-                            onChange={handleStaffSelect}
-                          >
-                            <Option value="staff1">Staff 1</Option>
-                            <Option value="staff2">Staff 2</Option>
-                            <Option value="staff3">Staff 3</Option>
-                          </Select>
-                        </>
-                      )}
-
-                      <Button
-                        type="dashed"
-                        block
-                        style={{ marginTop: "16px" }}
-                        onClick={handleAddAnotherService}
-                      >
-                        Add Another Service
-                      </Button>
-
-                      <div style={{ marginTop: "16px" }}>
-                        <Title level={4}>Total</Title>
-                        <p>${calculateTotal().toFixed(2)}</p>
-                        <Button type="primary" block>
-                          Thanh toán
+                          Back to Booking
                         </Button>
                       </div>
-                    </div>
+                    ) : (
+                      <div>
+                        <Divider />
+                        <div className="scroll-container">
+                          <button
+                            className="arrow-button"
+                            onClick={() =>
+                              handleScroll("left", dateContainerRef)
+                            }
+                          >
+                            <LeftOutlined />
+                          </button>
+                          <div
+                            className="scroll-wrapper"
+                            ref={dateContainerRef}
+                          >
+                            <div className="scroll-content">
+                              {currentMonthDays.map((day, index) => (
+                                <Button
+                                  key={index}
+                                  onClick={() => handleDateSelect(day)}
+                                  className={
+                                    selectedDate &&
+                                    selectedDate.toDateString() ===
+                                      day.toDateString()
+                                      ? "selected"
+                                      : ""
+                                  }
+                                >
+                                  {day.toDateString().slice(0, 10)}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                          <button
+                            className="arrow-button"
+                            onClick={() =>
+                              handleScroll("right", dateContainerRef)
+                            }
+                          >
+                            <RightOutlined />
+                          </button>
+                        </div>
+                        <Divider />
+
+                        {selectedDate && (
+                          <>
+                            <div className="time-picker">
+                              <div className="time-selector">
+                                <Button
+                                  onClick={() =>
+                                    setTimeSlots(generateTimeSlots(8, 12, 15))
+                                  }
+                                  className={
+                                    timeSlots.length &&
+                                    timeSlots[0].getHours() === 8
+                                      ? "selected"
+                                      : ""
+                                  }
+                                >
+                                  Morning
+                                </Button>
+                                <Button
+                                  onClick={() =>
+                                    setTimeSlots(generateTimeSlots(13, 17, 15))
+                                  }
+                                  className={
+                                    timeSlots.length &&
+                                    timeSlots[0].getHours() === 13
+                                      ? "selected"
+                                      : ""
+                                  }
+                                >
+                                  Afternoon
+                                </Button>
+                                <Button
+                                  onClick={() =>
+                                    setTimeSlots(generateTimeSlots(19, 22, 15))
+                                  }
+                                  className={
+                                    timeSlots.length &&
+                                    timeSlots[0].getHours() === 19
+                                      ? "selected"
+                                      : ""
+                                  }
+                                >
+                                  Evening
+                                </Button>
+                              </div>
+                              {timeSlots.length > 0 && (
+                                <>
+                                  <Divider />
+                                  <div className="scroll-container">
+                                    <button
+                                      className="arrow-button"
+                                      onClick={() =>
+                                        handleScroll("left", timeContainerRef)
+                                      }
+                                    >
+                                      <LeftOutlined />
+                                    </button>
+                                    <div
+                                      className="scroll-wrapper"
+                                      ref={timeContainerRef}
+                                    >
+                                      <div className="scroll-content">
+                                        {timeSlots.map((slot, index) => (
+                                          <Button
+                                            key={index}
+                                            onClick={() =>
+                                              handleTimeSlotSelect(slot)
+                                            }
+                                            className={
+                                              selectedTimeSlot === slot
+                                                ? "selected"
+                                                : ""
+                                            }
+                                          >
+                                            {slot.toLocaleTimeString([], {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                            })}
+                                          </Button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                    <button
+                                      className="arrow-button"
+                                      onClick={() =>
+                                        handleScroll("right", timeContainerRef)
+                                      }
+                                    >
+                                      <RightOutlined />
+                                    </button>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            <Divider />
+                          </>
+                        )}
+
+                        {selectedTimeSlot && (
+                          <>
+                            <Select
+                              placeholder="Select a staff"
+                              style={{ width: "100%" }}
+                              onChange={handleStaffSelect}
+                            >
+                              <Option value="staff1">Staff 1</Option>
+                              <Option value="staff2">Staff 2</Option>
+                              <Option value="staff3">Staff 3</Option>
+                            </Select>
+                          </>
+                        )}
+
+                        <Button
+                          type="dashed"
+                          block
+                          style={{ marginTop: "16px" }}
+                          onClick={() => setShowServiceList(true)}
+                        >
+                          Add Another Service
+                        </Button>
+
+                        <div style={{ marginTop: "16px" }}>
+                          <Title level={4}>Total</Title>
+                          <p>${calculateTotal().toFixed(2)}</p>
+                          <Button type="primary" block>
+                            Thanh toán
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </Modal>
                 </div>
                 <div>
