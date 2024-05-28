@@ -439,10 +439,10 @@ function SalonDetail(props) {
                           dataSource={services}
                           renderItem={(service, index) => (
                             <List.Item
-                              key={index} // Thêm thuộc tính key
+                              key={index} 
                               actions={[
                                 <Checkbox
-                                  key={`checkbox-${index}`} // Thêm thuộc tính key cho Checkbox
+                                  key={`checkbox-${index}`} 
                                   checked={additionalServices.includes(service)}
                                   onChange={() => handleServiceSelect(service)}
                                 >
