@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import "./App.css";
 import { Outlet, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
@@ -12,7 +12,7 @@ import Header from "./components/Header";
 import AccountPage from "./pages/AccountPage";
 
 function App() {
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
 
   return (
     <>
