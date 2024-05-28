@@ -3,6 +3,7 @@ import "../css/flaticon.min.css";
 import "../css/style.css";
 import { Link, Outlet } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
+
 function Header(props) {
   return (
     <>
@@ -105,6 +106,7 @@ function Header(props) {
               <IoMenu />
             </button>
             <a href="#" className="btn has-before">
+              
               <Link to={"/login"}>
                 <span className="span">Login</span>
               </Link>
