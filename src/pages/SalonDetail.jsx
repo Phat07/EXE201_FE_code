@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "../components/Header";
 import {
   Button,
@@ -15,6 +15,7 @@ import {
   Row,
   Space,
   Typography,
+  Select,
 } from "antd";
 import { Content } from "antd/es/layout/layout";
 import {
@@ -22,11 +23,14 @@ import {
   HeartOutlined,
   StarFilled,
   StarOutlined,
+  RightOutlined,
+  LeftOutlined,
 } from "@ant-design/icons";
 import "../css/salonDetail.css";
 
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
+const { Option } = Select;
 
 const imageArray1 = [
   "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
@@ -162,6 +166,98 @@ function SalonDetail(props) {
   const [isReportModalVisible, setIsReportModalVisible] = useState(false);
   const [selectedReports, setSelectedReports] = useState([]);
   const [showAllWork, setShowAllWork] = useState(false);
+  const [isBookingModalVisible, setIsBookingModalVisible] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [additionalServices, setAdditionalServices] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [scrollIndex, setScrollIndex] = useState(0);
+
+  const handleScroll = (direction, containerRef) => {
+    const maxScroll =
+      containerRef.current.scrollWidth - containerRef.current.clientWidth;
+    const scrollAmount = containerRef.current.clientWidth / 2;
+
+    if (direction === "left" && scrollIndex > 0) {
+      setScrollIndex(scrollIndex - 1);
+      containerRef.current.scrollBy({
+        left: -scrollAmount,
+        behavior: "smooth",
+      });
+    } else if (
+      direction === "right" &&
+      containerRef.current.scrollLeft < maxScroll
+    ) {
+      setScrollIndex(scrollIndex + 1);
+      containerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
+  const dateContainerRef = useRef(null);
+  const timeContainerRef = useRef(null);
+
+  const generateTimeSlots = (startHour, endHour, intervalMinutes) => {
+    const slots = [];
+    for (let hour = startHour; hour < endHour; hour++) {
+      for (let minute = 0; minute < 60; minute += intervalMinutes) {
+        const time = new Date();
+        time.setHours(hour);
+        time.setMinutes(minute);
+        slots.push(time);
+      }
+    }
+    return slots;
+  };
+
+  const generateDaysInMonth = (year, month) => {
+    const date = new Date(year, month, 1);
+    const days = [];
+    while (date.getMonth() === month) {
+      days.push(new Date(date));
+      date.setDate(date.getDate() + 1);
+    }
+    return days;
+  };
+
+  const currentMonthDays = generateDaysInMonth(
+    new Date().getFullYear(),
+    new Date().getMonth()
+  );
+
+  const handleBookClick = (service) => {
+    setSelectedService(service);
+    setIsBookingModalVisible(true);
+  };
+
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleTimeSlotSelect = (slot) => {
+    setSelectedTimeSlot(slot);
+  };
+
+  const handleStaffSelect = (staff) => {
+    setSelectedStaff(staff); // Hàm để cập nhật selectedStaff
+  };
+
+  const handleAddAnotherService = () => {
+    setAdditionalServices([...additionalServices, selectedService]);
+  };
+
+  const calculateTotal = () => {
+    const mainServicePrice =
+      parseFloat(selectedService?.price.replace("$", "")) || 0;
+    const additionalServicesPrice = additionalServices.reduce(
+      (total, service) => {
+        return total + parseFloat(service.price.replace("$", ""));
+      },
+      0
+    );
+    return mainServicePrice + additionalServicesPrice;
+  };
 
   const showReportModal = () => {
     setIsReportModalVisible(true);
@@ -291,7 +387,11 @@ function SalonDetail(props) {
                         renderItem={(service) => (
                           <List.Item
                             actions={[
-                              <Button type="primary" key="book">
+                              <Button
+                                type="primary"
+                                key="book"
+                                onClick={() => handleBookClick(service)}
+                              >
                                 Book
                               </Button>,
                             ]}
@@ -314,6 +414,183 @@ function SalonDetail(props) {
                       />
                     </Panel>
                   </Collapse>
+                </div>
+                <div>
+                  <Modal
+                    title="Book Service"
+                    visible={isBookingModalVisible}
+                    onCancel={() => setIsBookingModalVisible(false)}
+                    footer={null}
+                    width={800}
+                  >
+                    <div>
+                      <Divider />
+                      <div className="scroll-container">
+                        <button
+                          className="arrow-button"
+                          onClick={() => handleScroll("left", dateContainerRef)}
+                        >
+                          <LeftOutlined />
+                        </button>
+                        <div className="scroll-wrapper" ref={dateContainerRef}>
+                          <div className="scroll-content">
+                            {currentMonthDays.map((day, index) => (
+                              <Button
+                                key={index}
+                                onClick={() => handleDateSelect(day)}
+                                className={
+                                  selectedDate &&
+                                  selectedDate.toDateString() ===
+                                    day.toDateString()
+                                    ? "selected"
+                                    : ""
+                                }
+                              >
+                                {day.toDateString().slice(0, 10)}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                        <button
+                          className="arrow-button"
+                          onClick={() =>
+                            handleScroll("right", dateContainerRef)
+                          }
+                        >
+                          <RightOutlined />
+                        </button>
+                      </div>
+                      <Divider />
+
+                      {selectedDate && (
+                        <>
+                          <div className="time-picker">
+                            <div className="time-selector">
+                              <Button
+                                onClick={() =>
+                                  setTimeSlots(generateTimeSlots(8, 12, 15))
+                                }
+                                className={
+                                  timeSlots.length &&
+                                  timeSlots[0].getHours() === 8
+                                    ? "selected"
+                                    : ""
+                                }
+                              >
+                                Morning
+                              </Button>
+                              <Button
+                                onClick={() =>
+                                  setTimeSlots(generateTimeSlots(13, 17, 15))
+                                }
+                                className={
+                                  timeSlots.length &&
+                                  timeSlots[0].getHours() === 13
+                                    ? "selected"
+                                    : ""
+                                }
+                              >
+                                Afternoon
+                              </Button>
+                              <Button
+                                onClick={() =>
+                                  setTimeSlots(generateTimeSlots(19, 22, 15))
+                                }
+                                className={
+                                  timeSlots.length &&
+                                  timeSlots[0].getHours() === 19
+                                    ? "selected"
+                                    : ""
+                                }
+                              >
+                                Evening
+                              </Button>
+                            </div>
+                            {timeSlots.length > 0 && (
+                              <>
+                                <Divider />
+                                <div className="scroll-container">
+                                  <button
+                                    className="arrow-button"
+                                    onClick={() =>
+                                      handleScroll("left", timeContainerRef)
+                                    }
+                                  >
+                                    <LeftOutlined />
+                                  </button>
+                                  <div
+                                    className="scroll-wrapper"
+                                    ref={timeContainerRef}
+                                  >
+                                    <div className="scroll-content">
+                                      {timeSlots.map((slot, index) => (
+                                        <Button
+                                          key={index}
+                                          onClick={() =>
+                                            handleTimeSlotSelect(slot)
+                                          }
+                                          className={
+                                            selectedTimeSlot === slot
+                                              ? "selected"
+                                              : ""
+                                          }
+                                        >
+                                          {slot.toLocaleTimeString([], {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}
+                                        </Button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <button
+                                    className="arrow-button"
+                                    onClick={() =>
+                                      handleScroll("right", timeContainerRef)
+                                    }
+                                  >
+                                    <RightOutlined />
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          <Divider />
+                        </>
+                      )}
+
+                      {selectedTimeSlot && (
+                        <>
+                          <Select
+                            placeholder="Select a staff"
+                            style={{ width: "100%" }}
+                            onChange={handleStaffSelect}
+                          >
+                            <Option value="staff1">Staff 1</Option>
+                            <Option value="staff2">Staff 2</Option>
+                            <Option value="staff3">Staff 3</Option>
+                          </Select>
+                        </>
+                      )}
+
+                      <Button
+                        type="dashed"
+                        block
+                        style={{ marginTop: "16px" }}
+                        onClick={handleAddAnotherService}
+                      >
+                        Add Another Service
+                      </Button>
+
+                      <div style={{ marginTop: "16px" }}>
+                        <Title level={4}>Total</Title>
+                        <p>${calculateTotal().toFixed(2)}</p>
+                        <Button type="primary" block>
+                          Thanh toán
+                        </Button>
+                      </div>
+                    </div>
+                  </Modal>
                 </div>
                 <div>
                   <div className="our-work-section">
