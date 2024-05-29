@@ -15,6 +15,7 @@ import {
   Row,
   message,
   Modal,
+  Button,
 } from "antd";
 import {
   ClockCircleOutlined,
@@ -65,11 +66,29 @@ const salonData = [
       "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   },
   {
-    name: "Scottyt KINGSMEN BARBER",
-    address: "960 W US",
-    rating: 4.5,
-    reviews: 0,
+    name: "OMAR KINGSMEN BARBER ",
+    address: "960 Lincoln Hwy, Schererville, 46375",
+    rating: 5.0,
+    reviews: 509,
     recommend: true,
+    image:
+      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  },
+  {
+    name: "LEO KINGSMEN BARBER",
+    address: "960 Lincoln Hwy, Schererville, 46375",
+    rating: 4.9,
+    reviews: 187,
+    recommend: false,
+    image:
+      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  },
+  {
+    name: "Sergio Mendoza KINGSMEN BARBER",
+    address: "142 E US-30 Highway, Schererville, 46375",
+    rating: 5.0,
+    reviews: 176,
+    recommend: false,
     image:
       "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   },
@@ -101,11 +120,29 @@ const salonData = [
       "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   },
   {
-    name: "Scottyt KINGSMEN BARBER",
-    address: "960 W US",
-    rating: 0,
-    reviews: 0,
+    name: "OMAR KINGSMEN BARBER ",
+    address: "960 Lincoln Hwy, Schererville, 46375",
+    rating: 5.0,
+    reviews: 509,
     recommend: true,
+    image:
+      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  },
+  {
+    name: "LEO KINGSMEN BARBER",
+    address: "960 Lincoln Hwy, Schererville, 46375",
+    rating: 4.9,
+    reviews: 187,
+    recommend: false,
+    image:
+      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  },
+  {
+    name: "Sergio Mendoza KINGSMEN BARBER",
+    address: "142 E US-30 Highway, Schererville, 46375",
+    rating: 5.0,
+    reviews: 176,
+    recommend: false,
     image:
       "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   },
@@ -137,11 +174,29 @@ const salonData = [
       "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   },
   {
-    name: "Scottyt KINGSMEN BARBER",
-    address: "960 W US",
-    rating: 0,
-    reviews: 0,
+    name: "OMAR KINGSMEN BARBER ",
+    address: "960 Lincoln Hwy, Schererville, 46375",
+    rating: 5.0,
+    reviews: 509,
     recommend: true,
+    image:
+      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  },
+  {
+    name: "LEO KINGSMEN BARBER",
+    address: "960 Lincoln Hwy, Schererville, 46375",
+    rating: 4.9,
+    reviews: 187,
+    recommend: false,
+    image:
+      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  },
+  {
+    name: "Sergio Mendoza KINGSMEN BARBER",
+    address: "142 E US-30 Highway, Schererville, 46375",
+    rating: 5.0,
+    reviews: 176,
+    recommend: false,
     image:
       "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   },
@@ -173,11 +228,29 @@ const salonData = [
       "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   },
   {
-    name: "Scottyt KINGSMEN BARBER",
-    address: "960 W US",
+    name: "OMAR KINGSMEN BARBER ",
+    address: "960 Lincoln Hwy, Schererville, 46375",
     rating: 5.0,
-    reviews: 20,
+    reviews: 509,
     recommend: true,
+    image:
+      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  },
+  {
+    name: "LEO KINGSMEN BARBER",
+    address: "960 Lincoln Hwy, Schererville, 46375",
+    rating: 4.9,
+    reviews: 187,
+    recommend: false,
+    image:
+      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
+  },
+  {
+    name: "Sergio Mendoza KINGSMEN BARBER",
+    address: "142 E US-30 Highway, Schererville, 46375",
+    rating: 5.0,
+    reviews: 176,
+    recommend: false,
     image:
       "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/hinh-dep-5.jpg",
   },
@@ -185,7 +258,7 @@ const salonData = [
 
 function ListSalon(props) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(8);
 
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [currentLocation, setCurrentLocation] = useState("");
@@ -206,7 +279,7 @@ function ListSalon(props) {
 
   const handleScroll = (direction) => {
     if (scrollContainerRef.current) {
-      const scrollAmount = direction === "left" ? -200 : 200;
+      const scrollAmount = direction === "left" ? -200 : 1000;
       scrollContainerRef.current.scrollBy({
         left: scrollAmount,
         behavior: "smooth",
@@ -216,13 +289,13 @@ function ListSalon(props) {
 
   const handleEnableLocation = () => {
     document.body.style.overflow = "hidden"; // Disable scrolling
-  
+
     Modal.confirm({
       title: "Location Permission",
       content: "Do you want to allow access to your location?",
       onOk() {
         setLoading(true); // Show loader only when 'Ok' is clicked
-  
+
         if ("geolocation" in navigator) {
           navigator.geolocation.getCurrentPosition(
             (pos) => {
@@ -232,7 +305,11 @@ function ListSalon(props) {
                 .then((res) => res.json())
                 .then((data) => {
                   setCurrentLocation(data.address);
-                  setSearchLocation(`${data.address.road || data.address.suburb} - ${data.address.city}`);// Update searchLocation as well
+                  setSearchLocation(
+                    `${data.address.road || data.address.suburb} - ${
+                      data.address.city
+                    }`
+                  ); // Update searchLocation as well
                 })
                 .finally(() => {
                   setLoading(false); // Hide loader on success
@@ -352,6 +429,7 @@ function ListSalon(props) {
               {recommendedSalons.map((item, index) => (
                 <Card
                   key={index}
+                  className="small-card"
                   cover={<img alt={item.name} src={item.image} />}
                   actions={[<HeartOutlined key="heart" />]}
                 >
@@ -366,14 +444,13 @@ function ListSalon(props) {
                         <Rate
                           disabled
                           defaultValue={item.rating}
-                          style={{ fontSize: 14 }}
+                          style={{ fontSize: 12 }}
                         />{" "}
                         {item.reviews} reviews
                         <br />
                         <EnvironmentOutlined /> {item.address}
                       </>
                     }
-                    style={{ height: "8rem" }}
                   />
                 </Card>
               ))}
@@ -386,12 +463,12 @@ function ListSalon(props) {
             <RightOutlined />
           </button>
         </div>
-        <div style={{ width: "148.5rem" }}>
+        <div style={{ width: "110.5rem" }}>
           <Divider />
         </div>
-        <div style={{ width: "148.5rem" }}>
+        <div style={{ width: "110.5rem" }}>
           <List
-            grid={{ gutter: 16, column: 3 }}
+            grid={{ gutter: 16, column: 4 }}
             dataSource={currentSalons}
             renderItem={(item) => (
               <List.Item>

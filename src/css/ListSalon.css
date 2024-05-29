@@ -3,13 +3,9 @@
   display: flex;
   align-items: center;
   margin-top: 20px;
-  width: 162rem;
+  width: 124rem;
   margin-left: -7rem;
 }
-
-/* .ant-card-cover:first-child {
-    width: 250px;
-} */
 
 .arrow-button {
   background: white;
@@ -33,4 +29,28 @@
 .arrow-button:hover {
   background: black;
   color: white;
+}
+
+.small-card {
+  width: 220px;  
+}
+
+.small-card .ant-card-body {
+  padding: 10px;  
+}
+
+.small-card .ant-card-meta-title {
+  font-size: 16px;  
+}
+
+.small-card .ant-card-meta-description {
+  font-size: 11px;  
+}
+
+.small-card .ant-card-actions li {
+  margin: 6px 0;
+}
+
+:where(.css-dev-only-do-not-override-17seli4).ant-rate .ant-rate-star:not(:last-child) {
+  margin-inline-end: 0;
 }
