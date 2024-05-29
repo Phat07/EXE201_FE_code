@@ -11,6 +11,7 @@ import {
   DatePicker,
   Button,
 } from "antd";
+import moment from "moment";
 
 function AccountPage() {
   const { id } = useParams();
@@ -30,10 +31,17 @@ function AccountPage() {
       //   dayOfBirth: ,
       // };
       // setUser(userAccount);
-      const birthday = new Date(userAccount.dayOfBirth);
-      const birthDay = birthday.toISOString();
+      const birthday = new Date(userAccount.dayOfBirth).toISOString();
+      // const birthDay = birthday.toISOString();
       console.log(userAccount.dayOfBirth, "dayofBirth");
-      console.log(birthday.toISOString(), "birthhh");
+      console.log(birthday, "birthhh");
+      const dateOfBirthFE = birthday.slice(0, 10);
+      console.log(dateOfBirthFE, "FE");
+      const dateOfBirthBE = birthday;
+      console.log(dateOfBirthBE, "BE");
+      console.log(userAccount);
+      const dateOfBirth = new Date("1993-10-03");
+      console.log(dateOfBirth);
       // console.log(userAccount, "userAccounttt");
       form.setFieldsValue({
         fullName: userAccount?.fullName,
@@ -41,7 +49,7 @@ function AccountPage() {
         gender: userAccount?.gender,
         phone: userAccount?.phone,
         address: userAccount?.address,
-        dayOfBirth: birthDay,
+        // dayOfBirth: dateOfBirth,
       });
     });
   }, [id]);
@@ -52,7 +60,6 @@ function AccountPage() {
     console.log("finish");
     console.log(item.fullName, "Username");
   };
-  console.log(user, "userrrr");
 
   return (
     <div>
@@ -102,7 +109,7 @@ function AccountPage() {
             </Select>
           </Form.Item>
           <Form.Item label="Day Of Birth:" name="dayOfBirth">
-            <DatePicker />
+            <DatePicker defaultPickerValue={dateOfBirth} />
           </Form.Item>
           <Form.Item
             label="Phone:"
