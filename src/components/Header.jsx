@@ -6,7 +6,7 @@ import { IoMenu } from "react-icons/io5";
 
 function Header(props) {
   return (
-    <>
+    <div>
       <header className="header">
         <div className="header-top">
           <div className="container">
@@ -50,18 +50,18 @@ function Header(props) {
             </ul>
           </div>
         </div>
-        <div className="header-bottom" data-header>
+        <div className="header-bottom bg-slate-800" data-header>
           <div className="container">
-            <a href="#" className="logo">
+            <Link to={"/home"} className="logo">
               Barber
               <span className="span">Hair Salon</span>
-            </a>
+            </Link>
             <nav className="navbar container" data-navbar>
               <ul className="navbar-list">
                 <li className="navbar-item">
-                  <a href="#home" className="navbar-link" data-nav-link>
+                  <Link to={"/home"} className="navbar-link" data-nav-link>
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li className="navbar-item">
                   <a href="#services" className="navbar-link" data-nav-link>
@@ -106,7 +106,6 @@ function Header(props) {
               <IoMenu />
             </button>
             <a href="#" className="btn has-before">
-              
               <Link to={"/login"}>
                 <span className="span">Login</span>
               </Link>
@@ -117,7 +116,7 @@ function Header(props) {
         </div>
       </header>
       <Outlet />
-    </>
+    </div>
   );
 }
 
