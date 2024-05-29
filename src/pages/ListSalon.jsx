@@ -191,6 +191,8 @@ function ListSalon(props) {
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [currentLocation, setCurrentLocation] = useState("");
 
+  const [searchLocation, setSearchLocation] = useState("");
+
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -212,16 +214,16 @@ function ListSalon(props) {
       });
     }
   };
- 
+
   const handleEnableLocation = () => {
     document.body.style.overflow = "hidden"; // Disable scrolling
-
+  
     Modal.confirm({
       title: "Location Permission",
       content: "Do you want to allow access to your location?",
       onOk() {
         setLoading(true); // Show loader only when 'Ok' is clicked
-
+  
         if ("geolocation" in navigator) {
           navigator.geolocation.getCurrentPosition(
             (pos) => {
@@ -229,7 +231,10 @@ function ListSalon(props) {
               const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
               fetch(url)
                 .then((res) => res.json())
-                .then((data) => setCurrentLocation(data.address))
+                .then((data) => {
+                  setCurrentLocation(data.address);
+                  setSearchLocation(`${data.address.road || data.address.suburb} - ${data.address.city}`);// Update searchLocation as well
+                })
                 .finally(() => {
                   setLoading(false); // Hide loader on success
                   document.body.style.overflow = ""; // Enable scrolling
@@ -294,21 +299,32 @@ function ListSalon(props) {
                   prefix={<EnvironmentOutlined />}
                   placeholder={
                     currentLocation
-                      ? `${currentLocation?.road || currentLocation?.suburb} - ${
-                          currentLocation?.city
-                        }`
+                      ? `${
+                          currentLocation?.road || currentLocation?.suburb
+                        } - ${currentLocation?.city}`
                       : "Where?"
                   }
                   size="large"
                   className="search-input"
-                  value={
-                    currentLocation
-                      ? `${currentLocation?.road || currentLocation?.suburb} - ${currentLocation.city}`
-                      : ""
+                  value={searchLocation}
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                  suffix={
+                    currentLocation && (
+                      <Button
+                        type="text"
+                        onClick={() => {
+                          setCurrentLocation("");
+                          setSearchLocation("");
+                        }}
+                      >
+                        Clear
+                      </Button>
+                    )
                   }
                 />
               </Dropdown>
             </Col>
+
             <Col span={8}>
               <DatePicker
                 suffixIcon={<ClockCircleOutlined />}
