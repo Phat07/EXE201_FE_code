@@ -423,10 +423,10 @@ function LoginPage(props) {
               scale={1}
               position={[1.5, 1.5, -2]}
               action={status}/>
-            <Barber intensity={0.5}
+            {/* <Barber intensity={0.5}
               scale={0.03}
               position={[-7.5, 2.5, -3]}
-              action={status}/>
+              action={status}/> */}
           </Suspense>
         </Canvas>
       </>

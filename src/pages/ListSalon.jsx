@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import Header from "../components/Header";
+import Loader from "../components/Loader";
 import {
   Card,
   Col,
@@ -12,6 +13,8 @@ import {
   Pagination,
   Rate,
   Row,
+  message,
+  Modal,
 } from "antd";
 import {
   ClockCircleOutlined,
@@ -24,6 +27,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import "../css/ListSalon.css";
+import "../css/loader.css";
 
 const { Meta } = Card;
 
@@ -183,6 +187,11 @@ function ListSalon(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
 
+  const [loading, setLoading] = useState(false); // State for loading indicator
+  const [currentLocation, setCurrentLocation] = useState("");
+
+  const [searchLocation, setSearchLocation] = useState("");
+
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -205,17 +214,63 @@ function ListSalon(props) {
     }
   };
 
+  const handleEnableLocation = () => {
+    document.body.style.overflow = "hidden"; // Disable scrolling
+  
+    Modal.confirm({
+      title: "Location Permission",
+      content: "Do you want to allow access to your location?",
+      onOk() {
+        setLoading(true); // Show loader only when 'Ok' is clicked
+  
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const { latitude, longitude } = pos.coords;
+              const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+              fetch(url)
+                .then((res) => res.json())
+                .then((data) => {
+                  setCurrentLocation(data.address);
+                  setSearchLocation(`${data.address.road || data.address.suburb} - ${data.address.city}`);// Update searchLocation as well
+                })
+                .finally(() => {
+                  setLoading(false); // Hide loader on success
+                  document.body.style.overflow = ""; // Enable scrolling
+                });
+              message.success("Thank you for enabling location services.");
+            },
+            (error) => {
+              message.error("You have denied location access.");
+              setLoading(false); // Hide loader on error
+              document.body.style.overflow = ""; // Enable scrolling
+            }
+          );
+        } else {
+          message.error("Geolocation is not supported by your browser.");
+          setLoading(false); // Hide loader on error
+          document.body.style.overflow = ""; // Enable scrolling
+        }
+      },
+      onCancel() {
+        message.error("You have denied location access.");
+        document.body.style.overflow = ""; // Enable scrolling
+      },
+    });
+  };
+
   const enableLocation = (
     <Menu>
       <Menu.Item
         key="1"
         icon={<EnvironmentFilled style={{ color: "#00bcd4" }} />}
+        onClick={handleEnableLocation}
       >
         Enable location access
       </Menu.Item>
     </Menu>
   );
-
+  console.log("current", currentLocation);
   return (
     <div>
       <Header />
@@ -241,12 +296,34 @@ function ListSalon(props) {
               <Dropdown overlay={enableLocation} trigger={["click"]}>
                 <Input
                   prefix={<EnvironmentOutlined />}
-                  placeholder="Where?"
+                  placeholder={
+                    currentLocation
+                      ? `${
+                          currentLocation?.road || currentLocation?.suburb
+                        } - ${currentLocation?.city}`
+                      : "Where?"
+                  }
                   size="large"
                   className="search-input"
+                  value={searchLocation}
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                  suffix={
+                    currentLocation && (
+                      <Button
+                        type="text"
+                        onClick={() => {
+                          setCurrentLocation("");
+                          setSearchLocation("");
+                        }}
+                      >
+                        Clear
+                      </Button>
+                    )
+                  }
                 />
               </Dropdown>
             </Col>
+
             <Col span={8}>
               <DatePicker
                 suffixIcon={<ClockCircleOutlined />}
@@ -347,6 +424,11 @@ function ListSalon(props) {
           />
         </div>
       </div>
+      {loading && (
+        <div className="overlay">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 }
