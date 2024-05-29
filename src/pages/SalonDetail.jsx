@@ -16,6 +16,7 @@ import {
   Space,
   Typography,
   Select,
+  message,
 } from "antd";
 import { Content } from "antd/es/layout/layout";
 import {
@@ -58,9 +59,9 @@ const businessSchedule = [
 ];
 
 const services = [
-  { name: "Regular cut", price: "$35.00", duration: "25min" },
-  { name: "Haircut w beard", price: "$40.00", duration: "30min" },
-  { name: "Kids haircut", price: "$30.00", duration: "20min" },
+  { name: "Regular cut", price: "125.000", duration: "25min" },
+  { name: "Haircut w beard", price: "150.000", duration: "30min" },
+  { name: "Kids haircut", price: "200.000", duration: "20min" },
 ];
 
 const feedbacks = [
@@ -176,6 +177,13 @@ function SalonDetail(props) {
   const [scrollIndex, setScrollIndex] = useState(0);
   const [showServiceList, setShowServiceList] = useState(false);
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentService, setCurrentService] = useState(null);
+
+  console.log("selectedDate", selectedDate);
+  console.log("selectedTimeSlot", selectedTimeSlot);
+  console.log("timeSlots", timeSlots);
+
   const handleScroll = (direction, containerRef) => {
     const maxScroll =
       containerRef.current.scrollWidth - containerRef.current.clientWidth;
@@ -222,14 +230,49 @@ function SalonDetail(props) {
     return days;
   };
 
-  const currentMonthDays = generateDaysInMonth(
-    new Date().getFullYear(),
-    new Date().getMonth()
-  );
+  function generateNextSevenDays() {
+    let days = [];
+    const today = new Date();
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(today);
+      day.setDate(today.getDate() + i);
+      days.push(day);
+    }
+    return days;
+  }
+
+  // Call the function to get the next seven days
+  const currentMonthDays = generateNextSevenDays();
+  // const currentMonthDays = generateDaysInMonth(
+  //   // new Date().getFullYear(),
+  //   // new Date().getMonth()
+
+  // );
 
   const handleBookClick = (service) => {
-    setSelectedService(service);
-    setIsBookingModalVisible(true);
+    console.log("service", service);
+    // setSelectedService(service);
+    // setIsBookingModalVisible(true);
+    // setAdditionalServices([...additionalServices, service]);
+    // setAdditionalServices([...additionalServices, { ...service, isChangingStaff: false }]);
+    // Hiển thị phần "Add Another Service"
+    // setIsBookingModalVisible(true);
+    // setShowServiceList(true);
+    const isServiceAlreadySelected = additionalServices.some(
+      (s) => s.name === service.name
+    );
+
+    if (isServiceAlreadySelected) {
+      // Hiển thị thông báo nếu dịch vụ đã được chọn
+      message.warning("Dịch vụ này đã được chọn trước đó.");
+      // Hoặc sử dụng Ant Design message component
+      // message.warning("Dịch vụ này đã được chọn trước đó.");
+    } else {
+      // Thêm dịch vụ vào mảng additionalServices nếu chưa được chọn
+      setAdditionalServices([...additionalServices, service]);
+      // Hiển thị phần "Add Another Service"
+      setIsBookingModalVisible(true);
+    }
   };
 
   const handleDateSelect = (date) => {
@@ -245,9 +288,18 @@ function SalonDetail(props) {
   };
 
   const handleServiceSelect = (service) => {
-    if (additionalServices.includes(service)) {
-      setAdditionalServices(additionalServices.filter((s) => s !== service));
+    // if (additionalServices.includes(service)) {
+    //   setAdditionalServices(additionalServices.filter((s) => s !== service));
+    // } else {
+    //   setAdditionalServices([...additionalServices, service]);
+    // }
+    if (additionalServices.some((s) => s.name === service.name)) {
+      // Nếu dịch vụ đã tồn tại, loại bỏ nó khỏi danh sách
+      setAdditionalServices(
+        additionalServices.filter((s) => s.name !== service.name)
+      );
     } else {
+      // Nếu dịch vụ chưa tồn tại, thêm nó vào danh sách
       setAdditionalServices([...additionalServices, service]);
     }
   };
@@ -306,6 +358,34 @@ function SalonDetail(props) {
 
   const { averageRating, ratingDistribution, totalReviews } =
     calculateRatingDistribution(feedbacks);
+
+  const handleModalOk = (staff) => {
+    setAdditionalServices((prevServices) =>
+      prevServices.map((s) =>
+        s.name === currentService.name ? { ...s, staff } : s
+      )
+    );
+    setIsModalVisible(false);
+    setCurrentService(null);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+    setCurrentService(null);
+  };
+
+  // const handleChangeStaff = (service, newStaff) => {
+  //   setAdditionalServices((prevServices) =>
+  //     prevServices.map((s) => (s === service ? { ...s, staff: newStaff } : s))
+  //   );
+
+  // };
+
+  const handleChangeStaff = (service) => {
+    setCurrentService(service);
+    setIsModalVisible(true);
+  };
+  console.log("addService", additionalServices);
 
   return (
     <div>
@@ -406,12 +486,14 @@ function SalonDetail(props) {
                                 <span
                                   style={{
                                     fontSize: "1.3rem",
+                                    cursor: "pointer",
                                   }}
+                                  onClick={() => setIsBookingModalVisible(true)}
                                 >
                                   {service.name}
                                 </span>
                               }
-                              description={`${service.price} • ${service.duration}`}
+                              description={`${service.price} vnđ • ${service.duration}`}
                             />
                           </List.Item>
                         )}
@@ -432,38 +514,90 @@ function SalonDetail(props) {
                     width={800}
                   >
                     {showServiceList ? (
+                      // <div>
+                      //   <Title level={4}>Select Additional Services</Title>
+                      //   <List
+                      //     itemLayout="horizontal"
+                      //     dataSource={services}
+                      //     renderItem={(service, index) => (
+                      //       <List.Item
+                      //         key={index} // Thêm thuộc tính key
+                      //         actions={[
+                      //           <Checkbox
+                      //             key={`checkbox-${index}`} // Thêm thuộc tính key cho Checkbox
+                      //             checked={additionalServices.includes(service.name)}
+                      //             onChange={() => handleServiceSelect(service)}
+                      //           >
+                      //             Add
+                      //           </Checkbox>,
+                      //         ]}
+                      //       >
+                      //         <List.Item.Meta
+                      //           title={
+                      //             <span
+                      //               style={{
+                      //                 fontSize: "1.3rem",
+                      //               }}
+                      //             >
+                      //               {service.name}
+                      //             </span>
+                      //           }
+                      //           description={`${service.price} • ${service.duration}`}
+                      //         />
+                      //       </List.Item>
+                      //     )}
+                      //     style={{ backgroundColor: "transparent" }}
+                      //   />
+                      //   <Button
+                      //     type="dashed"
+                      //     block
+                      //     style={{ marginTop: "16px" }}
+                      //     onClick={() => setShowServiceList(false)}
+                      //   >
+                      //     Back to Booking
+                      //   </Button>
+                      // </div>
                       <div>
                         <Title level={4}>Select Additional Services</Title>
                         <List
                           itemLayout="horizontal"
                           dataSource={services}
-                          renderItem={(service, index) => (
-                            <List.Item
-                              key={index} // Thêm thuộc tính key
-                              actions={[
-                                <Checkbox
-                                  key={`checkbox-${index}`} // Thêm thuộc tính key cho Checkbox
-                                  checked={additionalServices.includes(service)}
-                                  onChange={() => handleServiceSelect(service)}
-                                >
-                                  Add
-                                </Checkbox>,
-                              ]}
-                            >
-                              <List.Item.Meta
-                                title={
-                                  <span
-                                    style={{
-                                      fontSize: "1.3rem",
-                                    }}
+                          renderItem={(service, index) => {
+                            // Kiểm tra nếu dịch vụ đã được chọn
+                            const isChecked = additionalServices.some(
+                              (s) => s.name === service.name
+                            );
+
+                            return (
+                              <List.Item
+                                key={index} // Thêm thuộc tính key
+                                actions={[
+                                  <Checkbox
+                                    key={`checkbox-${index}`} // Thêm thuộc tính key cho Checkbox
+                                    checked={isChecked}
+                                    onChange={() =>
+                                      handleServiceSelect(service)
+                                    }
                                   >
-                                    {service.name}
-                                  </span>
-                                }
-                                description={`${service.price} • ${service.duration}`}
-                              />
-                            </List.Item>
-                          )}
+                                    Add
+                                  </Checkbox>,
+                                ]}
+                              >
+                                <List.Item.Meta
+                                  title={
+                                    <span
+                                      style={{
+                                        fontSize: "1.3rem",
+                                      }}
+                                    >
+                                      {service.name}
+                                    </span>
+                                  }
+                                  description={`${service.price} • ${service.duration}`}
+                                />
+                              </List.Item>
+                            );
+                          }}
                           style={{ backgroundColor: "transparent" }}
                         />
                         <Button
@@ -617,7 +751,7 @@ function SalonDetail(props) {
                           </>
                         )}
 
-                        {selectedTimeSlot && (
+                        {/* {selectedTimeSlot && (
                           <>
                             <Select
                               placeholder="Select a staff"
@@ -629,6 +763,89 @@ function SalonDetail(props) {
                               <Option value="staff3">Staff 3</Option>
                             </Select>
                           </>
+                        )} */}
+
+                        {/* code form tại đây */}
+                        {/* {additionalServices.length > 0 && (
+                          <div>
+                            <Title level={4}>Additional Services</Title>
+                            <List
+                              itemLayout="horizontal"
+                              dataSource={additionalServices}
+                              renderItem={(service) => (
+                                <List.Item>
+                                  <List.Item.Meta
+                                    title={service.name}
+                                    description={`${service.price} vnđ • ${service.duration}`}
+                                  />
+                                </List.Item>
+                              )}
+                            />
+                          </div>
+                        )} */}
+                        {additionalServices.length > 0 && (
+                          <div>
+                            <Title level={4}>Additional Services</Title>
+                            <List
+                              itemLayout="horizontal"
+                              dataSource={additionalServices}
+                              renderItem={(service) => (
+                                <List.Item
+                                  actions={[
+                                    <Button
+                                      key="change"
+                                      onClick={() => handleChangeStaff(service)}
+                                    >
+                                      Change
+                                    </Button>,
+                                  ]}
+                                >
+                                  <List.Item.Meta
+                                    title={service.name}
+                                    description={
+                                      <>
+                                        {`${service.price} vnđ • ${service.duration}`}
+                                        <br />
+                                        <span>
+                                          Staff:{" "}
+                                          {service.staff || "Not assigned"}
+                                        </span>
+                                      </>
+                                    }
+                                  />
+                                  {/* {service.isChangingStaff && (
+                                    <Select
+                                      placeholder="Select a staff"
+                                      style={{ width: "100%" }}
+                                      onChange={(value) =>
+                                        handleChangeStaff(service, value)
+                                      }
+                                    >
+                                      <Option value="staff1">Staff 1</Option>
+                                      <Option value="staff2">Staff 2</Option>
+                                      <Option value="staff3">Staff 3</Option>
+                                    </Select>
+                                  )} */}
+                                  <Modal
+                                    title="Select a Staff"
+                                    visible={isModalVisible}
+                                    onOk={() => handleModalOk(selectedStaff)}
+                                    onCancel={handleModalCancel}
+                                  >
+                                    <Select
+                                      placeholder="Select a staff"
+                                      style={{ width: "100%" }}
+                                      onChange={setSelectedStaff}
+                                    >
+                                      <Option value="staff1">Staff 1</Option>
+                                      <Option value="staff2">Staff 2</Option>
+                                      <Option value="staff3">Staff 3</Option>
+                                    </Select>
+                                  </Modal>
+                                </List.Item>
+                              )}
+                            />
+                          </div>
                         )}
 
                         <Button
@@ -642,7 +859,7 @@ function SalonDetail(props) {
 
                         <div style={{ marginTop: "16px" }}>
                           <Title level={4}>Total</Title>
-                          <p>${calculateTotal().toFixed(2)}</p>
+                          <p>{calculateTotal().toFixed(2)} vnđ</p>
                           <Button type="primary" block>
                             Thanh toán
                           </Button>

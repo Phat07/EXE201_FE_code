@@ -11,6 +11,7 @@ import ListBarberEmployees from "./pages/ListBarberEmployees";
 import Header from "./components/Header";
 import AccountPage from "./pages/AccountPage";
 import SalonDetail from "./pages/SalonDetail";
+import ListSalon from "./pages/ListSalon";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -32,6 +33,8 @@ function App() {
           <Route path="/system_shop" element={<SystemBarberPage />} />
           <Route path="/list_shop" element={<ListShopBarber />} />
           <Route path="salon_detail" element={<SalonDetail />} />
+          <Route path="salon_detail" element={<SalonDetail />} />
+          <Route path="list_salon" element={<ListSalon />} />
         </Route>
       </Routes>
       {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
