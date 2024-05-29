@@ -91,7 +91,7 @@ function AccountPage() {
             </Select>
           </Form.Item>
           <Form.Item label="Day Of Birth:" name="dayOfBirth">
-            <DatePicker defaultPickerValue={dateOfBirth} />
+            <DatePicker />
           </Form.Item>
           <Form.Item
             label="Phone:"
