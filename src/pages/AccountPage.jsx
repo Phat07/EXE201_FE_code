@@ -11,6 +11,7 @@ import {
   DatePicker,
   Button,
 } from "antd";
+import moment from "moment";
 
 function AccountPage() {
   const { id } = useParams();
@@ -18,33 +19,23 @@ function AccountPage() {
   const EMPLOYEES_URL =
     "https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/SalonEmployees";
 
-  useEffect(() => {
-    axios.get(EMPLOYEES_URL).then((res) => {
-      console.log(
-        res.data.find((item) => item.id === id),
-        "userAccount"
-      );
-      const userAccount = res.data.find((item) => item.id === id);
-      // const userMapping = {
-      //   ...userAccount,
-      //   dayOfBirth: ,
-      // };
-      // setUser(userAccount);
-      const birthday = new Date(userAccount.dayOfBirth);
-      const birthDay = birthday.toISOString();
-      console.log(userAccount.dayOfBirth, "dayofBirth");
-      console.log(birthday.toISOString(), "birthhh");
-      // console.log(userAccount, "userAccounttt");
-      form.setFieldsValue({
-        fullName: userAccount?.fullName,
-        email: userAccount?.email,
-        gender: userAccount?.gender,
-        phone: userAccount?.phone,
-        address: userAccount?.address,
-        dayOfBirth: birthDay,
+    useEffect(() => {
+      axios.get(EMPLOYEES_URL).then((res) => {
+        const userAccount = res.data.find((item) => item.id === id);
+        setUser(userAccount)
+        if (userAccount) {
+          const birthDay = moment(userAccount.dayOfBirth);
+          form.setFieldsValue({
+            fullName: userAccount.fullName,
+            email: userAccount.email,
+            gender: userAccount.gender,
+            phone: userAccount.phone,
+            address: userAccount.address,
+            dayOfBirth: birthDay,
+          });
+        }
       });
-    });
-  }, [id]);
+    }, [id]);
 
   console.log(user, "user Ne");
   const [form] = Form.useForm();
