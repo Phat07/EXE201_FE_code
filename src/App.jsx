@@ -31,7 +31,7 @@ function App() {
           <Route path="/account_details/:id" element={<AccountPage />} />
           <Route path="/system_shop" element={<SystemBarberPage />} />
           <Route path="/list_shop" element={<ListShopBarber />} />
-          <Route path="salon_detail" element={<SalonDetail/>}/>
+          <Route path="salon_detail" element={<SalonDetail />} />
         </Route>
       </Routes>
       {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
