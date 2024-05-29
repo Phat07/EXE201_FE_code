@@ -11,7 +11,7 @@ import {
   DatePicker,
   Button,
 } from "antd";
-import moment from "moment";
+import dayjs from "dayjs";
 
 function AccountPage() {
   const { id } = useParams();
@@ -21,36 +21,19 @@ function AccountPage() {
 
   useEffect(() => {
     axios.get(EMPLOYEES_URL).then((res) => {
-      console.log(
-        res.data.find((item) => item.id === id),
-        "userAccount"
-      );
       const userAccount = res.data.find((item) => item.id === id);
-      // const userMapping = {
-      //   ...userAccount,
-      //   dayOfBirth: ,
-      // };
-      // setUser(userAccount);
-      const birthday = new Date(userAccount.dayOfBirth).toISOString();
-      // const birthDay = birthday.toISOString();
-      console.log(userAccount.dayOfBirth, "dayofBirth");
-      console.log(birthday, "birthhh");
-      const dateOfBirthFE = birthday.slice(0, 10);
-      console.log(dateOfBirthFE, "FE");
-      const dateOfBirthBE = birthday;
-      console.log(dateOfBirthBE, "BE");
-      console.log(userAccount);
-      const dateOfBirth = new Date("1993-10-03");
-      console.log(dateOfBirth);
-      // console.log(userAccount, "userAccounttt");
-      form.setFieldsValue({
-        fullName: userAccount?.fullName,
-        email: userAccount?.email,
-        gender: userAccount?.gender,
-        phone: userAccount?.phone,
-        address: userAccount?.address,
-        // dayOfBirth: dateOfBirth,
-      });
+      setUser(userAccount);
+      if (userAccount) {
+        const birthDay = dayjs(userAccount.dayOfBirth);
+        form.setFieldsValue({
+          fullName: userAccount.fullName,
+          email: userAccount.email,
+          gender: userAccount.gender,
+          phone: userAccount.phone,
+          address: userAccount.address,
+          dayOfBirth: birthDay,
+        });
+      }
     });
   }, [id]);
 
@@ -77,7 +60,6 @@ function AccountPage() {
           id={id}
           form={form}
           layout="vertical"
-          // initialValues={initialValues}
           onFinish={onFinish}
           autoComplete="off"
         >
