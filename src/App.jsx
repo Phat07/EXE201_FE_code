@@ -33,7 +33,6 @@ function App() {
           <Route path="/system_shop" element={<SystemBarberPage />} />
           <Route path="/list_shop" element={<ListShopBarber />} />
           <Route path="salon_detail" element={<SalonDetail />} />
-          <Route path="salon_detail" element={<SalonDetail />} />
           <Route path="list_salon" element={<ListSalon />} />
         </Route>
       </Routes>
