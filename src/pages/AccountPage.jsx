@@ -11,7 +11,7 @@ import {
   DatePicker,
   Button,
 } from "antd";
-import moment from "moment";
+import dayjs from "dayjs";
 
 function AccountPage() {
   const { id } = useParams();
@@ -19,23 +19,23 @@ function AccountPage() {
   const EMPLOYEES_URL =
     "https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/SalonEmployees";
 
-    useEffect(() => {
-      axios.get(EMPLOYEES_URL).then((res) => {
-        const userAccount = res.data.find((item) => item.id === id);
-        setUser(userAccount)
-        if (userAccount) {
-          const birthDay = moment(userAccount.dayOfBirth);
-          form.setFieldsValue({
-            fullName: userAccount.fullName,
-            email: userAccount.email,
-            gender: userAccount.gender,
-            phone: userAccount.phone,
-            address: userAccount.address,
-            dayOfBirth: birthDay,
-          });
-        }
-      });
-    }, [id]);
+  useEffect(() => {
+    axios.get(EMPLOYEES_URL).then((res) => {
+      const userAccount = res.data.find((item) => item.id === id);
+      setUser(userAccount);
+      if (userAccount) {
+        const birthDay = dayjs(userAccount.dayOfBirth);
+        form.setFieldsValue({
+          fullName: userAccount.fullName,
+          email: userAccount.email,
+          gender: userAccount.gender,
+          phone: userAccount.phone,
+          address: userAccount.address,
+          dayOfBirth: birthDay,
+        });
+      }
+    });
+  }, [id]);
 
   console.log(user, "user Ne");
   const [form] = Form.useForm();
@@ -61,7 +61,6 @@ function AccountPage() {
           id={id}
           form={form}
           layout="vertical"
-          // initialValues={initialValues}
           onFinish={onFinish}
           autoComplete="off"
         >
