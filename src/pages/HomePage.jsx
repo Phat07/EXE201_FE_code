@@ -9,6 +9,7 @@ import { PiHairDryerBold } from "react-icons/pi";
 import { BsFillEarFill } from "react-icons/bs";
 import { IoMenu } from "react-icons/io5";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 function HomePage(props) {
   return (
     <div>
@@ -657,6 +658,7 @@ function HomePage(props) {
           </section>
         </article>
       </main>
+      <Footer />
     </div>
   );
 }

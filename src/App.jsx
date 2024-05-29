@@ -12,6 +12,7 @@ import Header from "./components/Header";
 import AccountPage from "./pages/AccountPage";
 import SalonDetail from "./pages/SalonDetail";
 import ListSalon from "./pages/ListSalon";
+import Footer from "./components/Footer";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -32,8 +33,9 @@ function App() {
           <Route path="/account_details/:id" element={<AccountPage />} />
           <Route path="/system_shop" element={<SystemBarberPage />} />
           <Route path="/list_shop" element={<ListShopBarber />} />
-          <Route path="salon_detail" element={<SalonDetail />} />
-          <Route path="list_salon" element={<ListSalon />} />
+          <Route path="/salon_detail" element={<SalonDetail />} />
+          <Route path="/list_salon" element={<ListSalon />} />
+          <Route path="/footer" element={<Footer />} />
         </Route>
       </Routes>
       {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
