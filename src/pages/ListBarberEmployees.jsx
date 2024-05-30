@@ -129,14 +129,6 @@ function ListBarberEmployees() {
               <Button key="back" onClick={handleCancel}>
                 Return
               </Button>,
-              <Button
-                key="submit"
-                type="primary"
-                loading={confirmLoading}
-                onClick={handleOk}
-              >
-                Submit
-              </Button>,
             ]}
           >
             <AddEmployeeForm
