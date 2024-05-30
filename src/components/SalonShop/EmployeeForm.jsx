@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   Input,
@@ -8,16 +8,21 @@ import {
   DatePicker,
   Upload,
   message,
+  Flex,
 } from "antd";
 import {
   MinusCircleOutlined,
   PlusOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+import axios from "axios";
 
 const { Option } = Select;
 
 const AddEmployeeForm = ({ onAddEmployees }) => {
+  const EMPLOYEES_URL =
+    "https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/SalonEmployees";
+
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
 
@@ -27,8 +32,16 @@ const AddEmployeeForm = ({ onAddEmployees }) => {
       images: fileList[index]?.map((file) => file.originFileObj) || [],
     }));
     onAddEmployees(employees);
+    console.log(employees, "Employee Added");
     form.resetFields();
     setFileList([]);
+    axios.post(EMPLOYEES_URL, ...employees).then((res) => {
+      const updatedEmployeeList = values.employee.filter(
+        (emp) => emp.id !== values.id
+      );
+      onAddEmployees(updatedEmployeeList);
+      message.success("Employees has been added!!!");
+    });
   };
 
   const handleUploadChange = (index, { fileList: newFileList }) => {
@@ -173,9 +186,11 @@ const AddEmployeeForm = ({ onAddEmployees }) => {
         )}
       </Form.List>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Save Employees
-        </Button>
+        <Flex justify="flex-end" align="center">
+          <Button type="primary" htmlType="submit">
+            Save Employees
+          </Button>
+        </Flex>
       </Form.Item>
     </Form>
   );
