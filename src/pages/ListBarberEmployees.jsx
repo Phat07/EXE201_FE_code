@@ -8,6 +8,7 @@ import {
   Modal,
   message,
   Popconfirm,
+  Typography,
 } from "antd";
 import axios from "axios";
 import {
@@ -22,6 +23,7 @@ import AddEmployeeForm from "../components/SalonShop/EmployeeForm";
 
 function ListBarberEmployees() {
   const [open, setOpen] = useState(false);
+  const [reset, setReset] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Content of the modal");
   const [employeesList, setEmployeesList] = useState([]);
@@ -30,6 +32,8 @@ function ListBarberEmployees() {
     "https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/SalonEmployees/";
   const [page, setPage] = useState(1);
   const limit = 5;
+  const [concatList, setConcatList] = useState([]);
+  // const messageAddSuccess = message.success("Employee has been added!!!");
 
   useEffect(() => {
     axios.get(EMPLOYEES_URL + `?page=${page}&limit=${limit}`).then((res) => {
@@ -37,7 +41,7 @@ function ListBarberEmployees() {
       setIsLoading(false);
       console.log(res.data, "EmployeeList");
     });
-  }, []);
+  }, [concatList]); //New employee added, useEffect will be re-render to show data
 
   const onLoadMore = () => {
     const nextPage = page + 1;
@@ -45,8 +49,9 @@ function ListBarberEmployees() {
       axios
         .get(EMPLOYEES_URL + `?page=${nextPage}&limit=${limit}`)
         .then((res) => {
-          const nextData = employeesList.concat(res.data);
-          setEmployeesList(nextData);
+          // const nextData = employeesList.concat(res.data);
+          const concatData = [...employeesList, ...res.data];
+          setEmployeesList(concatData);
           setPage(nextPage);
           window.dispatchEvent(new Event("resize"));
         });
@@ -81,6 +86,7 @@ function ListBarberEmployees() {
   };
   const handleOk = () => {
     setModalText("Your employee is adding...");
+    // message;
     setConfirmLoading(true);
     setTimeout(() => {
       setOpen(false);
@@ -129,12 +135,23 @@ function ListBarberEmployees() {
               <Button key="back" onClick={handleCancel}>
                 Return
               </Button>,
+              <Button key="sumit" onClick={handleOk}>
+                submit
+              </Button>,
             ]}
           >
             <AddEmployeeForm
+              isReset={(e) => {
+                setReset(e);
+              }}
+              isOpen={(e) => {
+                setOpen(e); //e is False from EmployeeForm component pass value to ListBarberEmployees
+              }}
               onAddEmployees={(employee) => {
-                const newEmployeeList = employeesList.concat(employee);
-                setEmployeesList(newEmployeeList);
+                // const newEmployeeList = employeesList.concat(employee);
+                const concatNewData = [...employeesList, ...employee];
+                setEmployeesList(concatNewData);
+                setConcatList(concatNewData);
                 setOpen(false);
               }}
             />
@@ -146,30 +163,41 @@ function ListBarberEmployees() {
           itemLayout="horizontal"
           dataSource={employeesList}
           renderItem={(item) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<Avatar src={item.avatar} />}
-                title={item.fullName}
-                description={item.email}
-              />
-              <Link to={`/account_details/${item.id}`}>
-                <Button icon={<EditOutlined />} type="text">
-                  Edit
-                </Button>
-              </Link>
-              <Popconfirm
-                title="Delete employee"
-                description="Are you sure to delete this employee?"
-                onConfirm={() => handleDelete(item)}
-                onCancel={cancel}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button icon={<DeleteOutlined />} danger>
-                  Delete
-                </Button>
-              </Popconfirm>
-            </List.Item>
+            <>
+              <List.Item>
+                <List.Item.Meta
+                  avatar={
+                    <Flex
+                      gap={item.id < 10 ? "middle" : "small"}
+                      justify="cetner"
+                      align="center"
+                    >
+                      <Typography.Text strong>{item.id}</Typography.Text>
+                      <Avatar src={item.avatar} />
+                    </Flex>
+                  }
+                  title={item.fullName}
+                  description={item.email}
+                />
+                <Link to={`/account_details/${item.id}`}>
+                  <Button icon={<EditOutlined />} type="text">
+                    Edit
+                  </Button>
+                </Link>
+                <Popconfirm
+                  title="Delete employee"
+                  description="Are you sure to delete this employee?"
+                  onConfirm={() => handleDelete(item)}
+                  onCancel={cancel}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button icon={<DeleteOutlined />} danger>
+                    Delete
+                  </Button>
+                </Popconfirm>
+              </List.Item>
+            </>
           )}
         />
         <Flex justify="center" align="center">

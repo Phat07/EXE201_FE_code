@@ -19,7 +19,7 @@ import axios from "axios";
 
 const { Option } = Select;
 
-const AddEmployeeForm = ({ onAddEmployees }) => {
+const AddEmployeeForm = ({ onAddEmployees, isOpen, isReset }) => {
   const EMPLOYEES_URL =
     "https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/SalonEmployees";
 
@@ -31,7 +31,9 @@ const AddEmployeeForm = ({ onAddEmployees }) => {
       ...employee,
       images: fileList[index]?.map((file) => file.originFileObj) || [],
     }));
-    onAddEmployees(employees);
+    isReset(true);
+    // onAddEmployees(employees);
+    isOpen(false);
     console.log(employees, "Employee Added");
     form.resetFields();
     setFileList([]);
@@ -40,8 +42,8 @@ const AddEmployeeForm = ({ onAddEmployees }) => {
         (emp) => emp.id !== values.id
       );
       onAddEmployees(updatedEmployeeList);
-      message.success("Employees has been added!!!");
     });
+    message.success("Employee has been added!!!");
   };
 
   const handleUploadChange = (index, { fileList: newFileList }) => {
