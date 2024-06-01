@@ -23,7 +23,7 @@ function AccountPage() {
   const { id } = useParams();
   const [user, setUser] = useState({});
   const EMPLOYEES_URL =
-    "https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/SalonEmployees";
+    "https://664db6b2ede9a2b556548a08.mockapi.io/api/salon/SalonEmployees/";
   const [isEdit, setIsEdit] = useState(true);
 
   const confirm = (e) => {
@@ -58,24 +58,22 @@ function AccountPage() {
 
   const onFinish = (item) => {
     const birthDay = dayjs(user.dayOfBirth);
-    if (item) {
-      const userUpdated = {
-        fullName: item.fullName,
-        email: item.email,
-        gender: item.gender,
-        phone: item.phone,
-        address: item.address,
-        dayOfBirth: birthDay,
-        avatar: item.avatar,
-      };
-      axios
-        .put(EMPLOYEES_URL, userUpdated)
-        .then((res) => {
-          message.success("Your account is updated!");
-          console.log(res, "res neeeee");
-        })
-        .catch((err) => message.error(err));
-    }
+    const userUpdated = {
+      fullName: item.fullName,
+      email: item.email,
+      gender: item.gender,
+      phone: item.phone,
+      address: item.address,
+      dayOfBirth: birthDay,
+      avatar: item.avatar,
+    };
+    axios
+      .put(EMPLOYEES_URL + `${id}`, userUpdated)
+      .then((res) => {
+        message.success("Your account is updated!");
+        console.log(res, "res neeeee");
+      })
+      .catch((err) => message.error(err));
   };
 
   console.log(user, "user Ne");

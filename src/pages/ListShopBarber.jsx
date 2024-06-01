@@ -191,6 +191,7 @@ function ListShopBarber(props) {
           footer={<BsPersonCircle />}
         >
           <AddEmployeeForm
+            // **** pass value from child to parent ****
             onAddEmployees={(employees) => {
               setEmployees(employees);
               setEmployeeModalVisible(false);
