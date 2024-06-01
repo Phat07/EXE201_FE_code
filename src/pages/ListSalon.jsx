@@ -306,9 +306,9 @@ function ListSalon(props) {
                 .then((data) => {
                   setCurrentLocation(data.address);
                   setSearchLocation(
-                    `${data.address.road || data.address.suburb} - ${
-                      data.address.city
-                    }`
+                    `${
+                      data.address?.road || data.address?.suburb || data.address?.village
+                    } - ${data.address?.city|| data.address?.county}`
                   ); // Update searchLocation as well
                 })
                 .finally(() => {
@@ -376,8 +376,8 @@ function ListSalon(props) {
                   placeholder={
                     currentLocation
                       ? `${
-                          currentLocation?.road || currentLocation?.suburb
-                        } - ${currentLocation?.city}`
+                          currentLocation?.road || currentLocation?.suburb || currentLocation?.village
+                        } - ${currentLocation?.city|| currentLocation?.county}`
                       : "Where?"
                   }
                   size="large"
