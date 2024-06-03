@@ -1,10 +1,7 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import styles from "../css/login.module.css";
 import { Canvas } from "@react-three/fiber";
-import Dragon from "../models/Dragon";
-import ShopHair from "../models/ShopHair";
 import { Environment, OrbitControls } from "@react-three/drei";
-import ButterFlies from "../models/ButterFlies";
 import {
   Button,
   Modal,
